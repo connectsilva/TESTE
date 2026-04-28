@@ -11,11 +11,9 @@
 
 <style>
 html{scroll-behavior:smooth;}
-
-body{background:#0f6b63;color:#fff;font-family:Arial;margin:0}
+body{background:linear-gradient(to bottom,#0f6b63,#000);color:#fff;font-family:Arial;margin:0;background-attachment:fixed;}
 .container{max-width:1100px;margin:auto;padding:20px}
 
-/* CARD ORIGINAL */
 .card{
 background:#141414;
 padding:12px;
@@ -26,16 +24,18 @@ margin-bottom:6px;
 .form-box{max-height:0;overflow:hidden;transition:.3s}
 .form-box.ativo{max-height:600px}
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
 
-/* INPUT */
 input{
 padding:10px;
 border:none;
 border-radius:5px;
 width:100%;
 box-sizing:border-box;
-
 background:#2b2b2b;
 color:#fff;
 transition:.2s;
@@ -46,12 +46,6 @@ input:focus{
 outline:none;
 background:#bdbdbd;
 color:#000;
-border:1px solid #00e676;
-box-shadow:0 0 10px #00e67655;
-}
-
-input:focus{
-outline:none;
 border:2px solid #00e676;
 box-shadow:0 0 14px #00e676cc;
 transform:scale(1.02);
@@ -64,22 +58,68 @@ animation:focusGlow 1.2s infinite alternate;
 }
 
 .form-full{grid-column:span 2}
-button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
+
+button{
+padding:6px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:12px
+}
+
 .btn{background:#00c853;color:#fff}
 .btn-danger{background:#ff5252;color:#fff}
 .btn-warning{background:#ff9800;color:#fff}
 
-.aluno{border:1px solid #333;border-radius:10px;padding:8px;margin-bottom:6px}
-.aluno h3{margin:0;cursor:pointer;font-size:15px}
+.aluno{
+border:1px solid #333;
+border-radius:10px;
+padding:8px;
+margin-bottom:6px
+}
 
-.parcelas{max-height:70vh;overflow-y:auto;transition:.3s}
-.parcelas.ativo{padding-top:5px}
+.aluno h3{
+margin:0;
+cursor:pointer;
+font-size:15px
+}
 
-.parcela{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:14px}
-.parcela-botoes{display:flex;gap:4px;flex-wrap:wrap}
+.parcelas{
+max-height:70vh;
+overflow-y:auto;
+transition:.3s
+}
 
-.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.box{background:#1b1b1b;padding:10px;border-radius:10px;text-align:center}
+.parcelas.ativo{
+padding-top:5px
+}
+
+.parcela{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:4px 0;
+font-size:14px
+}
+
+.parcela-botoes{
+display:flex;
+gap:4px;
+flex-wrap:wrap
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.box{
+background:#1b1b1b;
+padding:10px;
+border-radius:10px;
+text-align:center
+}
 
 .fab{
 position:fixed;
@@ -98,29 +138,93 @@ cursor:pointer;
 z-index:9999;
 }
 
-#toast{position:fixed;top:20px;right:20px;background:#333;padding:10px;border-radius:8px;display:none}
-
 #topoMensalidade{
 position:sticky;
 top:0;
 background:#141414;
 z-index:5;
-transition:transform .3s;
 padding-top:5px;
 }
-#topoMensalidade.esconder{transform:translateY(-100%)}
 
 .abaAtiva{
 background:#ffffff22 !important;
 box-shadow:0 0 8px #00000055;
 transform:scale(1.05);
 }
+
+/* LOGIN APPEND ONLY */
+#loginBox{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fundo.png") center/cover no-repeat;
+z-index:99999;
+}
+.login-card{
+width:380px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+padding:35px;
+border-radius:22px;
+text-align:center;
+box-shadow:0 15px 45px rgba(0,0,0,.55);
+border:1px solid rgba(255,255,255,.08);
+}
+.logo{
+width:75px;
+height:75px;
+margin:0 auto 20px;
+border-radius:50%;
+background:linear-gradient(45deg,#00c853,#00e676);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+}
+.login-input{
+width:100%;
+padding:14px;
+margin-bottom:14px;
+border:none;
+outline:none;
+border-radius:12px;
+background:rgba(255,255,255,.12);
+color:#fff;
+font-size:15px;
+}
+.login-row{display:flex;align-items:center;justify-content:flex-start;font-size:14px;margin:8px 0 14px 0;}
+.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;}
 </style>
 </head>
 
 <body>
 
-<div id="toast"></div>
+<!-- APPEND ONLY: LOGIN -->
+<div id="loginBox">
+  <div class="login-card">
+    <div class="logo">🔐</div>
+    <h3>Acesso ao Sistema</h3>
+    <input id="email" class="login-input" type="email" placeholder="Digite seu email">
+
+    <div class="login-row">
+      <label>
+        <input type="checkbox" id="lembrar">
+        <span>Lembrar dados</span>
+      </label>
+    </div>
+
+    <div style="position:relative">
+      <input id="password" class="login-input" type="password" placeholder="Digite sua senha">
+      <span class="eye" onclick="toggleSenha()">👁</span>
+    </div>
+
+    <button class="btn" onclick="loginSistema()">Entrar</button>
+    <p id="msg"></p>
+  </div>
+</div>
 
 <div class="container">
 <div id="sistema">
@@ -135,7 +239,6 @@ transform:scale(1.05);
 </div>
 
 <div class="card">
-
 <h3 style="cursor:pointer" onclick="toggleForm()">Adicionar Aluno</h3>
 
 <div id="form" class="form-box">
@@ -147,30 +250,24 @@ transform:scale(1.05);
 <input id="meses" type="number" placeholder="Meses">
 <input id="tel" type="tel" placeholder="WhatsApp">
 
-<button type="button" class="btn form-full" onclick="addAluno()">Salvar</button>
+<button id="btnSalvar" class="btn form-full" onclick="salvarAluno()">Salvar</button>
 </div>
 </div>
-
 </div>
 
 <div class="card">
-<h3 style="cursor:default">💰 Mensalidades</h3>
+<h3>💰 Mensalidades</h3>
 
 <div id="mensalidade" class="parcelas ativo">
-
 <div id="topoMensalidade">
-
 <div style="display:flex;gap:5px;margin-bottom:8px">
 <button id="btnPend" class="btn" onclick="trocarAba('pendente')">Pendente</button>
-<button id="btnAtraso" class="btn btn-warning" onclick="trocarAba('atrasado')">Atrasado</button>
+<button id="btnAtraso" class="btn btn-warning abaAtiva" onclick="trocarAba('atrasado')">Atrasado</button>
 <button id="btnEmDia" class="btn" onclick="trocarAba('emdia')">Em dia</button>
 </div>
 
-<input id="busca" placeholder="🔎 Buscar aluno..." oninput="render()" 
-style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
-
+<input id="busca" placeholder="🔎 Buscar aluno..." oninput="render()" style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
 </div>
-
 <div id="lista"></div>
 </div>
 </div>
@@ -178,45 +275,83 @@ style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
 </div>
 </div>
 
+<footer style="
+width:100%;
+padding:20px 15px;
+text-align:center;
+background:linear-gradient(to top,#000,#111);
+color:white;
+border-top:2px solid #00e676;
+font-family:Arial,sans-serif;
+line-height:1.8;
+margin-top:30px;
+box-sizing:border-box;
+">
+
+    <p style="
+    margin:0;
+    font-size:18px;
+    font-weight:bold;
+    color:#ffffff;
+    ">
+        Gestão Financeira
+    </p>
+
+    <p style="
+    margin:4px 0;
+    font-size:13px;
+    color:#cccccc;
+    ">
+        Versão 2.5
+    </p>
+
+    <p style="
+    margin:4px 0;
+    font-size:12px;
+    color:#999999;
+    ">
+        © 2026 Todos os direitos reservados
+    </p>
+
+</footer>
+
 <div class="fab" onclick="toggleForm()">+</div>
 
 <script>
-
 const $=id=>document.getElementById(id)
 
 let alunos=JSON.parse(localStorage.getItem("alunos"))||[]
 let abaAtual="atrasado"
+let editandoIndex=null
 
-function salvar(){localStorage.setItem("alunos",JSON.stringify(alunos))}
+function salvar(){
+localStorage.setItem("alunos",JSON.stringify(alunos))
+}
 
 function toggleForm(){
-let f=$("form")
-if(f) f.classList.toggle("ativo")
+$("form").classList.toggle("ativo")
 }
 
 function trocarAba(a){
-abaAtual=a;
-
+abaAtual=a
 $("btnPend").classList.remove("abaAtiva")
 $("btnAtraso").classList.remove("abaAtiva")
 $("btnEmDia").classList.remove("abaAtiva")
-
 if(a=="pendente") $("btnPend").classList.add("abaAtiva")
 if(a=="atrasado") $("btnAtraso").classList.add("abaAtiva")
 if(a=="emdia") $("btnEmDia").classList.add("abaAtiva")
-
 render()
 }
 
 function limparForm(){
-["nome","apelido","valor","venc","meses","tel"].forEach(i=>{
-if($(i)) $(i).value=""
-})
+["nome","apelido","valor","venc","meses","tel"].forEach(i=>{$(i).value=""})
+editandoIndex=null
+$("btnSalvar").innerText="Salvar"
 }
 
 function formatar(d){
 let x=new Date(d)
-return `${String(x.getDate()).padStart(2,'0')}/${String(x.getMonth()+1).padStart(2,'0')}/${x.getFullYear()}`
+return `${String(x.getDate()).padStart(2,"0")}/${String(x.getMonth()+1).padStart(2,"0")}/${x.getFullYear()}`
 }
 
 function dataBR(d){
@@ -235,178 +370,82 @@ arr.push({numero:i+1,data:formatar(d),pago:false})
 return arr
 }
 
-function addAluno(){
-let nome=$("nome").value.trim()
-let apelido=$("apelido").value.trim()
-let valor=$("valor").value
-let venc=$("venc").value
-let meses=$("meses").value
-let tel=$("tel").value.trim()
+function salvarAluno(){if(editandoIndex===null){addAluno()}else{atualizarAluno()}}
 
-if(!nome || !valor || !venc || !meses){
-alert("Preencha tudo")
-return
-}
+function addAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){alert("Já existe um aluno com esse apelido!");return}alunos.push({nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses),open:false});salvar();render();limparForm();$("form").classList.remove("ativo")}
 
-/* 🔒 BLOQUEIO DE APELIDO DUPLICADO */
-if(apelido && alunos.some(a => (a.apelido || "").toLowerCase() === apelido.toLowerCase())){
-alert("Já existe um aluno com esse apelido!")
-return
-}
+function atualizarAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}alunos[editandoIndex]={...alunos[editandoIndex],nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses)};editandoIndex=null;$("btnSalvar").innerText="Salvar";salvar();render();limparForm();$("form").classList.remove("ativo")}
 
-alunos.push({
-nome,apelido,valor:+valor,tel,
-parcelas:gerarParcelas(venc,meses),
-open:false
-})
+function toggleAluno(i){alunos.forEach((a,idx)=>{if(idx!==i) a.open=false});alunos[i].open=!alunos[i].open;render()}
+function togglePago(i,p){alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago;salvar();render()}
 
-salvar()
-render()
-limparForm()
+function cobrarAluno(i,p){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let parcela=a.parcelas[p];let [dia,mes,ano]=parcela.data.split("/");const mesesNome=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];let referencia=`${mesesNome[parseInt(mes)-1]}/${ano}`;let msg=`Olá, ${a.nome}! 👋\nTudo bem?\n\nIdentificamos que sua mensalidade referente ao mês de ${referencia} ainda está em aberto.\n\n🗓️ Vencimento: ${parcela.data}\n💰 Valor total: R$ ${a.valor}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
 
-let f=$("form")
-if(f) f.classList.remove("ativo")
-}
+function cobrarTudo(i){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());if(!atrasadas.length){alert("Esse aluno não possui parcelas atrasadas");return}let total=atrasadas.length*a.valor;let listaParcelas=atrasadas.map(p=>`• ${p.data}`).join("\n");let msg=`Olá, ${a.nome}! 👋\nVocê possui ${atrasadas.length} mensalidades em aberto.\n\n${listaParcelas}\n\n💵 Total pendente: R$ ${total}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
 
-function toggleAluno(i){
-alunos.forEach((a,idx)=>{if(idx!==i) a.open=false})
-alunos[i].open=!alunos[i].open
-render()
-}
-
-function togglePago(i,p){
-if(!alunos[i] || !alunos[i].parcelas[p]) return
-alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago
-salvar()
-render()
-}
-
-function cobrarAluno(i,p){
-let a=alunos[i]
-if(!a.tel) return alert("Sem WhatsApp")
-
-let num=a.tel.replace(/\D/g,'')
-if(num.length===11) num="55"+num
-if(num.length<12) return alert("Número inválido")
-
-let parcela=a.parcelas[p]
-
-let msg=`Olá, ${a.nome}! 👋
-Tudo bem?
-
-📅 Parcela: ${parcela.numero}
-📆 Vencimento: ${parcela.data}
-💰 Valor: R$ ${a.valor}`
-
-window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)
-}
-
-/* RENDER */
-function render(){
-
-let lista=$("lista")
-lista.innerHTML=""
-
-let termo=$("busca")?$("busca").value.toLowerCase():""
-
-let pagas=0,atraso=0
-
-let ordenados = alunos
-.map((a,i)=>({a,i}))
-.sort((x,y)=>x.a.nome.localeCompare(y.a.nome,'pt-BR',{sensitivity:'base'}))
-
-ordenados.forEach(({a,i})=>{
-
-if(termo && !a.nome.toLowerCase().includes(termo) && !(a.apelido||"").toLowerCase().includes(termo)) return
-
-let atrasadas=a.parcelas.filter(p=>!p.pago&&dataBR(p.data)<new Date())
-let pagasArr=a.parcelas.filter(p=>p.pago)
-let pend=a.parcelas.filter(p=>!p.pago&&dataBR(p.data)>=new Date())
-
-pagas+=pagasArr.length
-atraso+=atrasadas.length
-
-let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas
-
-let html=`<div class="aluno">
-<h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""})</h3>
-<div class="parcelas ${a.open?'ativo':''}">`
-
-if(a.open){
-if(!exibir.length) html+=`<div style="opacity:.6">Sem parcelas</div>`
-
-exibir.forEach(p=>{
-let id=a.parcelas.findIndex(x=>x===p)
-
-html+=`<div class="parcela">
-<span>${p.numero} - ${p.data}</span>
-<div class="parcela-botoes">
-<button class="btn" onclick="editarAluno(${i})">Editar</button>
-<button class="btn-warning" onclick="cobrarAluno(${i},${id})">Cobrar</button>
-<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button>
-<button onclick="togglePago(${i},${id})">${p.pago?'✔':'❌'}</button>
-</div></div>`
-})
-}
-
-html+=`</div></div>`
-lista.innerHTML+=html
-})
-
-$("dAlunos").innerText=alunos.length
-$("dPagas").innerText=pagas
-$("dAtraso").innerText=atraso
-$("dInad").innerText=(pagas+atraso?((atraso/(pagas+atraso))*100).toFixed(1):0)+"%"
-}
+function render(){let lista=$("lista");lista.innerHTML="";let termo=$("busca").value.toLowerCase();let pagas=0;let atraso=0;let alunosEmDia=0;let alunosEmAtraso=0;let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}));ordenados.forEach(({a,i})=>{if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return;let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());let pagasArr=a.parcelas.filter(p=>p.pago);let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date());pagas+=pagasArr.length;atraso+=atrasadas.length;if(atrasadas.length>0){alunosEmAtraso++}else{alunosEmDia++}let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas;let infoExtra="";if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`;if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`;if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`;let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`;if(a.open){if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}exibir.forEach(p=>{let id=a.parcelas.findIndex(x=>x===p);html+=`<div class="parcela"><span>${p.numero} - ${p.data}</span><div class="parcela-botoes"><button class="btn" onclick="editarAluno(${i})">Editar</button><button class="btn-warning" onclick="cobrarAluno(${i},${id})">Cobrar</button>${atrasadas.length>=2?`<button class="btn" onclick="cobrarTudo(${i})">Cobrar Tudo</button>`:""}<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button><button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button></div></div>`})}html+=`</div></div>`;lista.innerHTML+=html});$("dAlunos").innerText=alunos.length;$("dPagas").innerText=pagas;$("dAtraso").innerText=atraso;$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"}
 
 render()
 
-function excluirAluno(i){
-if(!confirm("Deseja realmente excluir este aluno?")) return
-alunos.splice(i,1)
-salvar()
-render()
-}
+function excluirAluno(i){if(!confirm("Deseja realmente excluir este aluno?")) return;alunos.splice(i,1);salvar();render()}
 
-function editarAluno(i){
-let a = alunos[i]
-
-let nome = prompt("Nome:", a.nome)
-if(nome === null) return
-
-let apelido = prompt("Apelido:", a.apelido || "")
-if(apelido === null) return
-
-let valor = prompt("Valor:", a.valor)
-if(valor === null) return
-
-let tel = prompt("WhatsApp:", a.tel || "")
-if(tel === null) return
-
-let meses = prompt("Meses:", a.parcelas.length)
-if(meses === null) return
-
-let venc = prompt("Data inicial (YYYY-MM-DD):", "")
-
-a.nome = nome
-a.apelido = apelido
-a.valor = +valor
-a.tel = tel
-
-if(venc && meses){
-a.parcelas = gerarParcelas(venc, meses)
-}
-
-salvar()
-render()
-}
-
+function editarAluno(i){let a=alunos[i];$("nome").value=a.nome;$("apelido").value=a.apelido||"";$("valor").value=a.valor;$("tel").value=a.tel||"";$("meses").value=a.parcelas.length;let primeira=a.parcelas[0].data.split("/");$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`;editandoIndex=i;$("btnSalvar").innerText="Atualizar";$("form").classList.add("ativo");window.scrollTo({top:$("form").offsetTop-20,behavior:"smooth"})}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
+if("serviceWorker" in navigator){navigator.serviceWorker.register("service-worker.js")}
+</script>
+
+<!-- APPEND ONLY: LOGIN JS -->
+<script>
+window.addEventListener("load", ()=>{
+  const emailSalvo = localStorage.getItem("email");
+  const senhaSalva = localStorage.getItem("senha");
+  if(emailSalvo){document.getElementById("email").value=emailSalvo;document.getElementById("lembrar").checked=true}
+  if(senhaSalva){document.getElementById("password").value=senhaSalva}
+})
+
+function toggleSenha(){
+  const p=document.getElementById("password")
+  const eye=document.querySelector(".eye")
+  if(p.type==="password"){
+    p.type="text"
+    eye.innerHTML="◉"
+  }else{
+    p.type="password"
+    eye.innerHTML="👁"
+  }
 }
+
+function loginSistema(){
+  const email=document.getElementById("email").value.trim()
+  const senha=document.getElementById("password").value.trim()
+  const lembrar=document.getElementById("lembrar").checked
+
+  if(!email||!senha){
+    document.getElementById("msg").innerText="Preencha todos os campos"
+    return
+  }
+
+  if(lembrar){
+    localStorage.setItem("email",email)
+    localStorage.setItem("senha",senha)
+  }else{
+    localStorage.removeItem("email")
+    localStorage.removeItem("senha")
+  }
+
+  document.getElementById("loginBox").style.display="none"
+}
+
+document.addEventListener("keydown", function(e){
+  if(e.key==="Enter"){
+    const loginAberto=document.getElementById("loginBox")
+    if(loginAberto && loginAberto.style.display!=="none"){
+      loginSistema()
+    }
+  }
+})
 </script>
 
 </body>

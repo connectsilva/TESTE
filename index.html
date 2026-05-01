@@ -158,24 +158,28 @@ if(emailSalvo){document.getElementById('email').value=emailSalvo;document.getEle
 if(senhaSalva){document.getElementById('password').value=senhaSalva}
 })
 function toggleSenha(){const p=document.getElementById('password');p.type=p.type==='password'?'text':'password'}
-function loginSistema(){const email=document.getElementById('email').value.trim();const senha=document.getElementById('password').value.trim();const lembrar=document.getElementById('lembrar').checked;if(!email||!senha){document.getElementById('msg').innerText='Preencha todos os campos';return}if(lembrar){localStorage.setItem('email',email);localStorage.setItem('senha',senha)}else{localStorage.removeItem('email');localStorage.removeItem('senha')}document.getElementById('loginBox').style.display='none'}
+async function loginSistema(){const email=document.getElementById('email').value.trim();const senha=document.getElementById('password').value.trim();const lembrar=document.getElementById('lembrar').checked;if(!email||!senha){document.getElementById('msg').innerText='Preencha todos os campos';return}try{await window.signInWithEmailAndPassword(window.auth,email,senha);if(lembrar){localStorage.setItem('email',email);localStorage.setItem('senha',senha)}else{localStorage.removeItem('email');localStorage.removeItem('senha')}document.getElementById('loginBox').style.display='none'}catch(error){document.getElementById('msg').innerText='Email ou senha inválidos'}}
 </script>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'
 import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
+import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB7BDjrePNqatQqtuCzGXoClV6lIeKLk9w",
-  authDomain: "testedoteste-70d06.firebaseapp.com",
-  projectId: "testedoteste-70d06",
-  storageBucket: "testedoteste-70d06.firebasestorage.app",
-  messagingSenderId: "70101213285",
-  appId: "1:70101213285:web:b3c5e1fb02ec43b93b268c"
-};
+apiKey:'SUA_API_KEY',
+authDomain:'SEU_PROJETO.firebaseapp.com',
+projectId:'SEU_PROJECT_ID',
+storageBucket:'SEU_PROJETO.appspot.com',
+messagingSenderId:'SEU_SENDER_ID',
+appId:'SEU_APP_ID'
+}
 
 const app=initializeApp(firebaseConfig)
 const db=getFirestore(app)
+const auth=getAuth(app)
+window.auth=auth
+window.signInWithEmailAndPassword=signInWithEmailAndPassword
 
 window.salvarNuvem=async function(){
 await setDoc(doc(db,'sistema','alunos'),{alunos,atualizadoEm:new Date().toISOString()})

@@ -47,26 +47,27 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 <body>
 
 <div id="loginBox">
-  <div class="login-card">
-    <div class="logo">🔐</div>
-    <h3>Acesso ao Sistema</h3>
-    <input id="email" class="login-input" type="email" placeholder="Digite seu email">
+<div class="login-card">
+<div class="logo">🔐</div>
+<h3>Acesso ao Sistema</h3>
 
-    <div class="login-row">
-      <label>
-        <input type="checkbox" id="lembrar">
-        <span>Lembrar dados</span>
-      </label>
-    </div>
+<input id="email" class="login-input" type="email" placeholder="Digite seu email">
 
-    <div style="position:relative">
-      <input id="password" class="login-input" type="password" placeholder="Digite sua senha">
-      <span class="eye" onclick="toggleSenha()">👁</span>
-    </div>
+<div class="login-row">
+<label>
+<input type="checkbox" id="lembrar">
+<span>Lembrar dados</span>
+</label>
+</div>
 
-    <button class="btn" onclick="loginSistema()">Entrar</button>
-    <p id="msg"></p>
-  </div>
+<div style="position:relative">
+<input id="password" class="login-input" type="password" placeholder="Digite sua senha">
+<span class="eye" onclick="toggleSenha()">👁</span>
+</div>
+
+<button class="btn" onclick="loginSistema()">Entrar</button>
+<p id="msg"></p>
+</div>
 </div>
 
 <div class="container">
@@ -86,14 +87,6 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 <div class="box">
 <button class="btn-warning" onclick="document.getElementById('restoreFile').click()">📥 Restaurar</button>
 <input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restaurarBackup(event)">
-</div>
-
-<div class="box">
-<button class="btn" onclick="salvarNuvem()">☁ Salvar Nuvem</button>
-</div>
-
-<div class="box">
-<button class="btn-warning" onclick="carregarNuvem()">📥 Carregar Nuvem</button>
 </div>
 </div>
 
@@ -115,14 +108,17 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 <div class="card">
 <h3>💰 Mensalidades</h3>
 <div id="mensalidade" class="parcelas ativo">
+
 <div id="topoMensalidade">
 <div style="display:flex;gap:5px;margin-bottom:8px">
 <button id="btnPend" class="btn" onclick="trocarAba('pendente')">Pendente</button>
 <button id="btnAtraso" class="btn btn-warning abaAtiva" onclick="trocarAba('atrasado')">Atrasado</button>
 <button id="btnEmDia" class="btn" onclick="trocarAba('emdia')">Em dia</button>
 </div>
+
 <input id="busca" placeholder="🔎 Buscar aluno..." oninput="render()" style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
 </div>
+
 <div id="lista"></div>
 </div>
 </div>
@@ -146,49 +142,344 @@ let editandoIndex=null
 function salvar(){
 localStorage.setItem("alunos",JSON.stringify(alunos))
 
-if(window.salvarNuvem){
-window.salvarNuvem()
+if(window.autoBackupNuvem){
+window.autoBackupNuvem()
 }
 }
+
 function toggleForm(){$("form").classList.toggle("ativo")}
-function trocarAba(a){abaAtual=a;$("btnPend").classList.remove("abaAtiva");$("btnAtraso").classList.remove("abaAtiva");$("btnEmDia").classList.remove("abaAtiva");if(a=="pendente") $("btnPend").classList.add("abaAtiva");if(a=="atrasado") $("btnAtraso").classList.add("abaAtiva");if(a=="emdia") $("btnEmDia").classList.add("abaAtiva");render()}
-function limparForm(){["nome","apelido","valor","venc","meses","tel"].forEach(i=>{$(i).value=""});editandoIndex=null;$("btnSalvar").innerText="Salvar"}
-function formatar(d){let x=new Date(d);return `${String(x.getDate()).padStart(2,"0")}/${String(x.getMonth()+1).padStart(2,"0")}/${x.getFullYear()}`}
-function dataBR(d){let [dia,mes,ano]=d.split("/");return new Date(ano,mes-1,dia)}
-function gerarParcelas(v,m){let base=new Date(v);let arr=[];for(let i=0;i<m;i++){let d=new Date(base);d.setMonth(d.getMonth()+i);arr.push({numero:i+1,data:formatar(d),pago:false})}return arr}
-function salvarAluno(){if(editandoIndex===null){addAluno()}else{atualizarAluno()}}
-function addAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){alert("Já existe um aluno com esse apelido!");return}alunos.push({nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses),open:false});salvar();render();limparForm();$("form").classList.remove("ativo")}
-function atualizarAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}alunos[editandoIndex]={...alunos[editandoIndex],nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses)};editandoIndex=null;$("btnSalvar").innerText="Salvar";salvar();render();limparForm();$("form").classList.remove("ativo")}
-function toggleAluno(i){alunos.forEach((a,idx)=>{if(idx!==i) a.open=false});alunos[i].open=!alunos[i].open;render()}
-function togglePago(i,p){alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago;salvar();render()}
-function cobrarAluno(i,p){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let parcela=a.parcelas[p];let [dia,mes,ano]=parcela.data.split("/");const mesesNome=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];let referencia=`${mesesNome[parseInt(mes)-1]}/${ano}`;let msg=`Olá, ${a.nome}! 👋\nTudo bem?\n\nIdentificamos que sua mensalidade referente ao mês de ${referencia} ainda está em aberto.\n\n🗓️ Vencimento: ${parcela.data}\n💰 Valor total: R$ ${a.valor}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
-function cobrarTudo(i){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());if(!atrasadas.length){alert("Esse aluno não possui parcelas atrasadas");return}let total=atrasadas.length*a.valor;let listaParcelas=atrasadas.map(p=>`• ${p.data}`).join("\n");let msg=`Olá, ${a.nome}! 👋\nVocê possui ${atrasadas.length} mensalidades em aberto.\n\n${listaParcelas}\n\n💵 Total pendente: R$ ${total}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
-function render(){let lista=$("lista");lista.innerHTML="";let termo=$("busca").value.toLowerCase();let pagas=0;let atraso=0;let alunosEmDia=0;let alunosEmAtraso=0;let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}));ordenados.forEach(({a,i})=>{if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return;let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());let pagasArr=a.parcelas.filter(p=>p.pago);let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date());pagas+=pagasArr.length;atraso+=atrasadas.length;if(atrasadas.length>0){alunosEmAtraso++}else{alunosEmDia++}let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas;let infoExtra="";if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`;if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`;if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`;let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`;if(a.open){if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}exibir.forEach(p=>{let id=a.parcelas.findIndex(x=>x===p);html+=`<div class="parcela"><span>${p.numero} - ${p.data}</span><div class="parcela-botoes"><button class="btn" onclick="editarAluno(${i})">Editar</button><button class="btn-warning" onclick="cobrarAluno(${i},${id})">Cobrar</button>${atrasadas.length>=2?`<button class="btn" onclick="cobrarTudo(${i})">Cobrar Tudo</button>`:""}<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button><button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button></div></div>`})}html+=`</div></div>`;lista.innerHTML+=html});$("dAlunos").innerText=alunos.length;$("dPagas").innerText=pagas;$("dAtraso").innerText=atraso;$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"}
+
+function trocarAba(a){
+abaAtual=a
+$("btnPend").classList.remove("abaAtiva")
+$("btnAtraso").classList.remove("abaAtiva")
+$("btnEmDia").classList.remove("abaAtiva")
+
+if(a=="pendente") $("btnPend").classList.add("abaAtiva")
+if(a=="atrasado") $("btnAtraso").classList.add("abaAtiva")
+if(a=="emdia") $("btnEmDia").classList.add("abaAtiva")
+
 render()
-function excluirAluno(i){if(!confirm("Deseja realmente excluir este aluno?")) return;alunos.splice(i,1);salvar();render()}
-function editarAluno(i){let a=alunos[i];$("nome").value=a.nome;$("apelido").value=a.apelido||"";$("valor").value=a.valor;$("tel").value=a.tel||"";$("meses").value=a.parcelas.length;let primeira=a.parcelas[0].data.split("/");$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`;editandoIndex=i;$("btnSalvar").innerText="Atualizar";$("form").classList.add("ativo");window.scrollTo({top:$("form").offsetTop-20,behavior:"smooth"})}
-function fazerBackup(){let dados={data:new Date().toISOString(),alunos:alunos};let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement("a");a.href=url;a.download=`backup-capoeira-${Date.now()}.json`;a.click();URL.revokeObjectURL(url)}
-function restaurarBackup(event){let arquivo=event.target.files[0];if(!arquivo) return;let reader=new FileReader();reader.onload=function(e){try{let dados=JSON.parse(e.target.result);if(!dados.alunos){alert("Backup inválido");return}if(!confirm("Deseja restaurar o backup? Isso substituirá os dados atuais.")){return}alunos=dados.alunos;salvar();render();alert("Backup restaurado com sucesso!")}catch{alert("Erro ao restaurar backup")}};reader.readAsText(arquivo)}
-</script>
+}
 
-<script>
-if("serviceWorker" in navigator){navigator.serviceWorker.register("service-worker.js")}
-</script>
+function limparForm(){
+["nome","apelido","valor","venc","meses","tel"].forEach(i=>{$(i).value=""})
+editandoIndex=null
+$("btnSalvar").innerText="Salvar"
+}
 
-<script>
-window.addEventListener("load", ()=>{
-const emailSalvo = localStorage.getItem("email");
-const senhaSalva = localStorage.getItem("senha");
-if(emailSalvo){document.getElementById("email").value=emailSalvo;document.getElementById("lembrar").checked=true}
-if(senhaSalva){document.getElementById("password").value=senhaSalva}
+function formatar(d){
+let x=new Date(d)
+return `${String(x.getDate()).padStart(2,"0")}/${String(x.getMonth()+1).padStart(2,"0")}/${x.getFullYear()}`
+}
+
+function dataBR(d){
+let [dia,mes,ano]=d.split("/")
+return new Date(ano,mes-1,dia)
+}
+
+function gerarParcelas(v,m){
+let base=new Date(v)
+let arr=[]
+
+for(let i=0;i<m;i++){
+let d=new Date(base)
+d.setMonth(d.getMonth()+i)
+arr.push({numero:i+1,data:formatar(d),pago:false})
+}
+
+return arr
+}
+
+function salvarAluno(){
+if(editandoIndex===null){addAluno()}
+else{atualizarAluno()}
+}
+
+function addAluno(){
+let nome=$("nome").value.trim()
+let apelido=$("apelido").value.trim()
+let valor=$("valor").value
+let venc=$("venc").value
+let meses=$("meses").value
+let tel=$("tel").value.trim()
+
+if(!nome||!valor||!venc||!meses){
+alert("Preencha tudo")
+return
+}
+
+if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){
+alert("Já existe um aluno com esse apelido!")
+return
+}
+
+alunos.push({
+nome,
+apelido,
+valor:+valor,
+tel,
+parcelas:gerarParcelas(venc,meses),
+open:false
 })
-function toggleSenha(){const p=document.getElementById("password");const eye=document.querySelector(".eye");if(p.type==="password"){p.type="text";eye.innerHTML="◉"}else{p.type="password";eye.innerHTML="👁"}}
-async function loginSistema(){const email=document.getElementById("email").value.trim();const senha=document.getElementById("password").value.trim();const lembrar=document.getElementById("lembrar").checked;if(!email||!senha){document.getElementById("msg").innerText="Preencha todos os campos";return}try{await window.signInWithEmailAndPassword(window.auth,email,senha);if(lembrar){localStorage.setItem("email",email);localStorage.setItem("senha",senha)}else{localStorage.removeItem("email");localStorage.removeItem("senha")}document.getElementById("loginBox").style.display="none"
 
-if(window.carregarNuvem){
-await window.carregarNuvem()
-}}catch(error){document.getElementById("msg").innerText="Email ou senha inválidos"}}
-document.addEventListener("keydown", function(e){if(e.key==="Enter"){const loginAberto=document.getElementById("loginBox");if(loginAberto && loginAberto.style.display!=="none"){loginSistema()}}})
+salvar()
+render()
+limparForm()
+$("form").classList.remove("ativo")
+}
+
+function atualizarAluno(){
+let nome=$("nome").value.trim()
+let apelido=$("apelido").value.trim()
+let valor=$("valor").value
+let venc=$("venc").value
+let meses=$("meses").value
+let tel=$("tel").value.trim()
+
+if(!nome||!valor||!venc||!meses){
+alert("Preencha tudo")
+return
+}
+
+alunos[editandoIndex]={
+...alunos[editandoIndex],
+nome,
+apelido,
+valor:+valor,
+tel,
+parcelas:gerarParcelas(venc,meses)
+}
+
+editandoIndex=null
+$("btnSalvar").innerText="Salvar"
+
+salvar()
+render()
+limparForm()
+$("form").classList.remove("ativo")
+}
+
+function toggleAluno(i){
+alunos.forEach((a,idx)=>{if(idx!==i) a.open=false})
+alunos[i].open=!alunos[i].open
+render()
+}
+
+function togglePago(i,p){
+alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago
+salvar()
+render()
+}
+
+function render(){
+let lista=$("lista")
+lista.innerHTML=""
+let termo=$("busca").value.toLowerCase()
+
+let pagas=0
+let atraso=0
+let alunosEmDia=0
+let alunosEmAtraso=0
+
+let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}))
+
+ordenados.forEach(({a,i})=>{
+if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return
+
+let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date())
+let pagasArr=a.parcelas.filter(p=>p.pago)
+let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date())
+
+pagas+=pagasArr.length
+atraso+=atrasadas.length
+
+if(atrasadas.length>0){alunosEmAtraso++}
+else{alunosEmDia++}
+
+let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas
+
+let infoExtra=""
+if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`
+if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`
+if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`
+
+let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`
+
+if(a.open){
+if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}
+
+exibir.forEach(p=>{
+let id=a.parcelas.findIndex(x=>x===p)
+
+html+=`<div class="parcela">
+<span>${p.numero} - ${p.data}</span>
+<div class="parcela-botoes">
+<button class="btn" onclick="editarAluno(${i})">Editar</button>
+<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button>
+<button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button>
+</div>
+</div>`
+})
+}
+
+html+=`</div></div>`
+lista.innerHTML+=html
+})
+
+$("dAlunos").innerText=alunos.length
+$("dPagas").innerText=pagas
+$("dAtraso").innerText=atraso
+$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"
+}
+
+render()
+
+function excluirAluno(i){
+if(!confirm("Deseja realmente excluir este aluno?")) return
+alunos.splice(i,1)
+salvar()
+render()
+}
+
+function editarAluno(i){
+let a=alunos[i]
+
+$("nome").value=a.nome
+$("apelido").value=a.apelido||""
+$("valor").value=a.valor
+$("tel").value=a.tel||""
+$("meses").value=a.parcelas.length
+
+let primeira=a.parcelas[0].data.split("/")
+$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`
+
+editandoIndex=i
+$("btnSalvar").innerText="Atualizar"
+$("form").classList.add("ativo")
+}
+
+function fazerBackup(){
+let dados={data:new Date().toISOString(),alunos:alunos}
+let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"})
+let url=URL.createObjectURL(blob)
+
+let a=document.createElement("a")
+a.href=url
+a.download=`backup-capoeira-${Date.now()}.json`
+a.click()
+
+URL.revokeObjectURL(url)
+}
+
+function restaurarBackup(event){
+let arquivo=event.target.files[0]
+if(!arquivo) return
+
+let reader=new FileReader()
+
+reader.onload=function(e){
+try{
+let dados=JSON.parse(e.target.result)
+
+if(!dados.alunos){
+alert("Backup inválido")
+return
+}
+
+if(!confirm("Deseja restaurar o backup?")){
+return
+}
+
+alunos=dados.alunos
+salvar()
+render()
+
+alert("Backup restaurado com sucesso!")
+
+}catch{
+alert("Erro ao restaurar backup")
+}
+}
+
+reader.readAsText(arquivo)
+}
+</script>
+
+<script>
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("service-worker.js")
+}
+</script>
+
+<script>
+window.addEventListener("load",()=>{
+const emailSalvo=localStorage.getItem("email")
+const senhaSalva=localStorage.getItem("senha")
+
+if(emailSalvo){
+document.getElementById("email").value=emailSalvo
+document.getElementById("lembrar").checked=true
+}
+
+if(senhaSalva){
+document.getElementById("password").value=senhaSalva
+}
+})
+
+function toggleSenha(){
+const p=document.getElementById("password")
+const eye=document.querySelector(".eye")
+
+if(p.type==="password"){
+p.type="text"
+eye.innerHTML="◉"
+}else{
+p.type="password"
+eye.innerHTML="👁"
+}
+}
+
+async function loginSistema(){
+const email=document.getElementById("email").value.trim()
+const senha=document.getElementById("password").value.trim()
+const lembrar=document.getElementById("lembrar").checked
+
+if(!email||!senha){
+document.getElementById("msg").innerText="Preencha todos os campos"
+return
+}
+
+try{
+await window.signInWithEmailAndPassword(window.auth,email,senha)
+
+if(lembrar){
+localStorage.setItem("email",email)
+localStorage.setItem("senha",senha)
+}else{
+localStorage.removeItem("email")
+localStorage.removeItem("senha")
+}
+
+document.getElementById("loginBox").style.display="none"
+
+if(window.carregarNuvemAuto){
+await window.carregarNuvemAuto()
+}
+
+}catch(error){
+document.getElementById("msg").innerText="Email ou senha inválidos"
+}
+}
+
+document.addEventListener("keydown",function(e){
+if(e.key==="Enter"){
+const loginAberto=document.getElementById("loginBox")
+if(loginAberto && loginAberto.style.display!=="none"){
+loginSistema()
+}
+}
+})
 </script>
 
 <script type="module">
@@ -197,43 +488,46 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB7BDjrePNqatQqtuCzGXoClV6lIeKLk9w",
-  authDomain: "testedoteste-70d06.firebaseapp.com",
-  projectId: "testedoteste-70d06",
-  storageBucket: "testedoteste-70d06.firebasestorage.app",
-  messagingSenderId: "70101213285",
-  appId: "1:70101213285:web:b3c5e1fb02ec43b93b268c"
-};s
+apiKey: "AIzaSyB7BDjrePNqatQqtuCzGXoClV6lIeKLk9w",
+authDomain: "testedoteste-70d06.firebaseapp.com",
+projectId: "testedoteste-70d06",
+storageBucket: "testedoteste-70d06.firebasestorage.app",
+messagingSenderId: "70101213285",
+appId: "1:70101213285:web:b3c5e1fb02ec43b93b268c"
+};
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-window.auth = auth;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
 
-window.salvarNuvem = async function(){
+window.auth = auth
+window.signInWithEmailAndPassword = signInWithEmailAndPassword
+
+window.autoBackupNuvem = async function(){
 try{
-await setDoc(doc(db,"sistema","alunos"),{alunos: alunos,atualizadoEm: new Date().toISOString()})
-alert("Dados salvos na nuvem!")
-}catch(error){alert("Erro ao salvar na nuvem")}
+await setDoc(doc(db,"sistema","alunos"),{
+alunos: alunos,
+atualizadoEm: new Date().toISOString()
+})
+}catch(error){
+console.log(error)
+}
 }
 
-window.carregarNuvem = async function(){
+window.carregarNuvemAuto = async function(){
 try{
 const docRef = doc(db,"sistema","alunos")
 const docSnap = await getDoc(docRef)
+
 if(docSnap.exists()){
-if(confirm("Deseja carregar dados da nuvem?")){
 const dados = docSnap.data()
 alunos = dados.alunos || []
-salvar()
+localStorage.setItem("alunos",JSON.stringify(alunos))
 render()
-alert("Dados carregados da nuvem!")
 }
-}else{
-alert("Nenhum backup encontrado")
+}catch(error){
+console.log(error)
 }
-}catch(error){alert("Erro ao carregar dados da nuvem")}
 }
 </script>
 

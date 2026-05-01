@@ -13,37 +13,210 @@
 html{scroll-behavior:smooth;}
 body{background:linear-gradient(to bottom,#0f6b63,#000);color:#fff;font-family:Arial;margin:0;background-attachment:fixed;}
 .container{max-width:1100px;margin:auto;padding:20px}
-.card{background:#141414;padding:12px;border-radius:10px;margin-bottom:6px;}
+
+.card{
+background:#141414;
+padding:12px;
+border-radius:10px;
+margin-bottom:6px;
+}
+
 .form-box{max-height:0;overflow:hidden;transition:.3s}
 .form-box.ativo{max-height:600px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-input{padding:10px;border:none;border-radius:5px;width:100%;box-sizing:border-box;background:#2b2b2b;color:#fff;transition:.2s;border:1px solid transparent;}
-input:focus{outline:none;background:#bdbdbd;color:#000;border:2px solid #00e676;box-shadow:0 0 14px #00e676cc;transform:scale(1.02);animation:focusGlow 1.2s infinite alternate;}
-@keyframes focusGlow{0%{box-shadow:0 0 8px #00e67666;}100%{box-shadow:0 0 16px #00e676dd;}}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+input{
+padding:10px;
+border:none;
+border-radius:5px;
+width:100%;
+box-sizing:border-box;
+background:#2b2b2b;
+color:#fff;
+transition:.2s;
+border:1px solid transparent;
+}
+
+input:focus{
+outline:none;
+background:#bdbdbd;
+color:#000;
+border:2px solid #00e676;
+box-shadow:0 0 14px #00e676cc;
+transform:scale(1.02);
+animation:focusGlow 1.2s infinite alternate;
+}
+
+@keyframes focusGlow{
+0%{box-shadow:0 0 8px #00e67666;}
+100%{box-shadow:0 0 16px #00e676dd;}
+}
+
 .form-full{grid-column:span 2}
-button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
+
+button{
+padding:6px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:12px
+}
+
 .btn{background:#00c853;color:#fff}
 .btn-danger{background:#ff5252;color:#fff}
 .btn-warning{background:#ff9800;color:#fff}
-.aluno{border:1px solid #333;border-radius:10px;padding:8px;margin-bottom:6px}
-.aluno h3{margin:0;cursor:pointer;font-size:15px}
-.parcelas{max-height:70vh;overflow-y:auto;transition:.3s}
-.parcelas.ativo{padding-top:5px}
-.parcela{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:14px}
-.parcela-botoes{display:flex;gap:4px;flex-wrap:wrap}
-.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.box{background:#1b1b1b;padding:10px;border-radius:10px;text-align:center}
-.fab{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:#25D366;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;}
-#topoMensalidade{position:sticky;top:0;background:#141414;z-index:5;padding-top:5px;}
-.abaAtiva{background:#ffffff22 !important;box-shadow:0 0 8px #00000055;transform:scale(1.05);}
-#loginBox{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fundo.png") center/cover no-repeat;z-index:99999;}
-.login-card{width:380px;background:rgba(255,255,255,.08);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:35px;border-radius:22px;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.08);}
-.logo{width:75px;height:75px;margin:0 auto 20px;border-radius:50%;background:linear-gradient(45deg,#00c853,#00e676);display:flex;align-items:center;justify-content:center;font-size:32px;}
-.login-input{width:100%;padding:14px;margin-bottom:14px;border:none;outline:none;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-size:15px;}
-.login-row{display:flex;align-items:center;justify-content:flex-start;font-size:14px;margin:8px 0 14px 0;}
-.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;}
+
+.aluno{
+border:1px solid #333;
+border-radius:10px;
+padding:8px;
+margin-bottom:6px
+}
+
+.aluno h3{
+margin:0;
+cursor:pointer;
+font-size:15px
+}
+
+.parcelas{
+max-height:70vh;
+overflow-y:auto;
+transition:.3s
+}
+
+.parcelas.ativo{
+padding-top:5px
+}
+
+.parcela{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:4px 0;
+font-size:14px
+}
+
+.parcela-botoes{
+display:flex;
+gap:4px;
+flex-wrap:wrap
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.box{
+background:#1b1b1b;
+padding:10px;
+border-radius:10px;
+text-align:center
+}
+
+.fab{
+position:fixed;
+bottom:20px;
+right:20px;
+width:60px;
+height:60px;
+border-radius:50%;
+background:#25D366;
+color:#fff;
+font-size:30px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+z-index:9999;
+}
+
+#topoMensalidade{
+position:sticky;
+top:0;
+background:#141414;
+z-index:5;
+padding-top:5px;
+}
+
+.abaAtiva{
+background:#ffffff22 !important;
+box-shadow:0 0 8px #00000055;
+transform:scale(1.05);
+}
+
+#loginBox{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fundo.png") center/cover no-repeat;
+z-index:99999;
+}
+
+.login-card{
+width:380px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+padding:35px;
+border-radius:22px;
+text-align:center;
+box-shadow:0 15px 45px rgba(0,0,0,.55);
+border:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+width:75px;
+height:75px;
+margin:0 auto 20px;
+border-radius:50%;
+background:linear-gradient(45deg,#00c853,#00e676);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+}
+
+.login-input{
+width:100%;
+padding:14px;
+margin-bottom:14px;
+border:none;
+outline:none;
+border-radius:12px;
+background:rgba(255,255,255,.12);
+color:#fff;
+font-size:15px;
+}
+
+.login-row{
+display:flex;
+align-items:center;
+justify-content:flex-start;
+font-size:14px;
+margin:8px 0 14px 0;
+}
+
+.eye{
+position:absolute;
+right:14px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+font-size:18px;
+}
 </style>
 </head>
+
 <body>
 
 <div id="loginBox">
@@ -72,6 +245,7 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 
 <div class="container">
 <div id="sistema">
+
 <h2>🥋 Controle de Capoeira</h2>
 
 <div class="card dashboard">
@@ -92,6 +266,7 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 
 <div class="card">
 <h3 style="cursor:pointer" onclick="toggleForm()">Adicionar Aluno</h3>
+
 <div id="form" class="form-box">
 <div class="form-grid">
 <input id="nome" placeholder="Nome">
@@ -100,6 +275,7 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 <input id="venc" type="date">
 <input id="meses" type="number" placeholder="Meses">
 <input id="tel" type="tel" placeholder="WhatsApp">
+
 <button id="btnSalvar" class="btn form-full" onclick="salvarAluno()">Salvar</button>
 </div>
 </div>
@@ -107,8 +283,8 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 
 <div class="card">
 <h3>💰 Mensalidades</h3>
-<div id="mensalidade" class="parcelas ativo">
 
+<div id="mensalidade" class="parcelas ativo">
 <div id="topoMensalidade">
 <div style="display:flex;gap:5px;margin-bottom:8px">
 <button id="btnPend" class="btn" onclick="trocarAba('pendente')">Pendente</button>
@@ -118,10 +294,10 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 
 <input id="busca" placeholder="🔎 Buscar aluno..." oninput="render()" style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
 </div>
-
 <div id="lista"></div>
 </div>
 </div>
+
 </div>
 </div>
 
@@ -135,6 +311,7 @@ button{padding:6px;border:none;border-radius:5px;cursor:pointer;font-size:12px}
 
 <script>
 const $=id=>document.getElementById(id)
+
 let alunos=JSON.parse(localStorage.getItem("alunos"))||[]
 let abaAtual="atrasado"
 let editandoIndex=null
@@ -147,18 +324,18 @@ window.autoBackupNuvem()
 }
 }
 
-function toggleForm(){$("form").classList.toggle("ativo")}
+function toggleForm(){
+$("form").classList.toggle("ativo")
+}
 
 function trocarAba(a){
 abaAtual=a
 $("btnPend").classList.remove("abaAtiva")
 $("btnAtraso").classList.remove("abaAtiva")
 $("btnEmDia").classList.remove("abaAtiva")
-
 if(a=="pendente") $("btnPend").classList.add("abaAtiva")
 if(a=="atrasado") $("btnAtraso").classList.add("abaAtiva")
 if(a=="emdia") $("btnEmDia").classList.add("abaAtiva")
-
 render()
 }
 
@@ -181,194 +358,69 @@ return new Date(ano,mes-1,dia)
 function gerarParcelas(v,m){
 let base=new Date(v)
 let arr=[]
-
 for(let i=0;i<m;i++){
 let d=new Date(base)
 d.setMonth(d.getMonth()+i)
 arr.push({numero:i+1,data:formatar(d),pago:false})
 }
-
 return arr
 }
 
-function salvarAluno(){
-if(editandoIndex===null){addAluno()}
-else{atualizarAluno()}
-}
+function salvarAluno(){if(editandoIndex===null){addAluno()}else{atualizarAluno()}}
 
-function addAluno(){
-let nome=$("nome").value.trim()
-let apelido=$("apelido").value.trim()
-let valor=$("valor").value
-let venc=$("venc").value
-let meses=$("meses").value
-let tel=$("tel").value.trim()
+function addAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){alert("Já existe um aluno com esse apelido!");return}alunos.push({nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses),open:false});salvar();render();limparForm();$("form").classList.remove("ativo")}
 
-if(!nome||!valor||!venc||!meses){
-alert("Preencha tudo")
-return
-}
+function atualizarAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}alunos[editandoIndex]={...alunos[editandoIndex],nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses)};editandoIndex=null;$("btnSalvar").innerText="Salvar";salvar();render();limparForm();$("form").classList.remove("ativo")}
 
-if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){
-alert("Já existe um aluno com esse apelido!")
-return
-}
+function toggleAluno(i){alunos.forEach((a,idx)=>{if(idx!==i) a.open=false});alunos[i].open=!alunos[i].open;render()}
+function togglePago(i,p){alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago;salvar();render()}
 
-alunos.push({
-nome,
-apelido,
-valor:+valor,
-tel,
-parcelas:gerarParcelas(venc,meses),
-open:false
-})
-
-salvar()
-render()
-limparForm()
-$("form").classList.remove("ativo")
-}
-
-function atualizarAluno(){
-let nome=$("nome").value.trim()
-let apelido=$("apelido").value.trim()
-let valor=$("valor").value
-let venc=$("venc").value
-let meses=$("meses").value
-let tel=$("tel").value.trim()
-
-if(!nome||!valor||!venc||!meses){
-alert("Preencha tudo")
-return
-}
-
-alunos[editandoIndex]={
-...alunos[editandoIndex],
-nome,
-apelido,
-valor:+valor,
-tel,
-parcelas:gerarParcelas(venc,meses)
-}
-
-editandoIndex=null
-$("btnSalvar").innerText="Salvar"
-
-salvar()
-render()
-limparForm()
-$("form").classList.remove("ativo")
-}
-
-function toggleAluno(i){
-alunos.forEach((a,idx)=>{if(idx!==i) a.open=false})
-alunos[i].open=!alunos[i].open
-render()
-}
-
-function togglePago(i,p){
-alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago
-salvar()
-render()
-}
-
-function render(){
-let lista=$("lista")
-lista.innerHTML=""
-let termo=$("busca").value.toLowerCase()
-
-let pagas=0
-let atraso=0
-let alunosEmDia=0
-let alunosEmAtraso=0
-
-let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}))
-
-ordenados.forEach(({a,i})=>{
-if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return
-
-let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date())
-let pagasArr=a.parcelas.filter(p=>p.pago)
-let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date())
-
-pagas+=pagasArr.length
-atraso+=atrasadas.length
-
-if(atrasadas.length>0){alunosEmAtraso++}
-else{alunosEmDia++}
-
-let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas
-
-let infoExtra=""
-if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`
-if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`
-if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`
-
-let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`
-
-if(a.open){
-if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}
-
-exibir.forEach(p=>{
-let id=a.parcelas.findIndex(x=>x===p)
-
-html+=`<div class="parcela">
-<span>${p.numero} - ${p.data}</span>
-<div class="parcela-botoes">
-<button class="btn" onclick="editarAluno(${i})">Editar</button>
-<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button>
-<button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button>
-</div>
-</div>`
-})
-}
-
-html+=`</div></div>`
-lista.innerHTML+=html
-})
-
-$("dAlunos").innerText=alunos.length
-$("dPagas").innerText=pagas
-$("dAtraso").innerText=atraso
-$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"
-}
-
-render()
-
-function excluirAluno(i){
-if(!confirm("Deseja realmente excluir este aluno?")) return
-alunos.splice(i,1)
-salvar()
-render()
-}
-
-function editarAluno(i){
+function cobrarAluno(i,p){
 let a=alunos[i]
 
-$("nome").value=a.nome
-$("apelido").value=a.apelido||""
-$("valor").value=a.valor
-$("tel").value=a.tel||""
-$("meses").value=a.parcelas.length
+if(!a.tel) return alert("Sem WhatsApp")
 
-let primeira=a.parcelas[0].data.split("/")
-$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`
+let num=a.tel.replace(/\D/g,"")
 
-editandoIndex=i
-$("btnSalvar").innerText="Atualizar"
-$("form").classList.add("ativo")
+if(num.length===11) num="55"+num
+if(num.length<12) return alert("Número inválido")
+
+let parcela=a.parcelas[p]
+
+let msg=`Olá, ${a.nome}! 👋
+Tudo bem?
+
+Identificamos que sua mensalidade ainda está em aberto. Seguem os detalhes:
+
+📅 Parcela: ${parcela.numero}
+📆 Vencimento: ${parcela.data}
+💰 Valor: R$ ${a.valor}
+
+Caso já tenha realizado o pagamento, por favor desconsidere esta mensagem.
+
+Se precisar de qualquer ajuda ou tiver alguma dúvida, estou à disposição 🙂`
+
+window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)
 }
+
+function cobrarTudo(i){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());if(!atrasadas.length){alert("Esse aluno não possui parcelas atrasadas");return}let total=atrasadas.length*a.valor;let listaParcelas=atrasadas.map(p=>`• ${p.data}`).join("\n");let msg=`Olá, ${a.nome}! 👋\nVocê possui ${atrasadas.length} mensalidades em aberto.\n\n${listaParcelas}\n\n💵 Total pendente: R$ ${total}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
+
+function render(){let lista=$("lista");lista.innerHTML="";let termo=$("busca").value.toLowerCase();let pagas=0;let atraso=0;let alunosEmDia=0;let alunosEmAtraso=0;let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}));ordenados.forEach(({a,i})=>{if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return;let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());let pagasArr=a.parcelas.filter(p=>p.pago);let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date());pagas+=pagasArr.length;atraso+=atrasadas.length;if(atrasadas.length>0){alunosEmAtraso++}else{alunosEmDia++}let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas;let infoExtra="";if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`;if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`;if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`;let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`;if(a.open){if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}exibir.forEach(p=>{let id=a.parcelas.findIndex(x=>x===p);html+=`<div class="parcela"><span>${p.numero} - ${p.data}</span><div class="parcela-botoes"><button class="btn" onclick="editarAluno(${i})">Editar</button><button class="btn-warning" onclick="cobrarAluno(${i},${id})">Cobrar</button>${atrasadas.length>=2?`<button class="btn" onclick="cobrarTudo(${i})">Cobrar Tudo</button>`:""}<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button><button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button></div></div>`})}html+=`</div></div>`;lista.innerHTML+=html});$("dAlunos").innerText=alunos.length;$("dPagas").innerText=pagas;$("dAtraso").innerText=atraso;$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"}
+
+render()
+
+function excluirAluno(i){if(!confirm("Deseja realmente excluir este aluno?")) return;alunos.splice(i,1);salvar();render()}
+
+function editarAluno(i){let a=alunos[i];$("nome").value=a.nome;$("apelido").value=a.apelido||"";$("valor").value=a.valor;$("tel").value=a.tel||"";$("meses").value=a.parcelas.length;let primeira=a.parcelas[0].data.split("/");$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`;editandoIndex=i;$("btnSalvar").innerText="Atualizar";$("form").classList.add("ativo");window.scrollTo({top:$("form").offsetTop-20,behavior:"smooth"})}
 
 function fazerBackup(){
 let dados={data:new Date().toISOString(),alunos:alunos}
 let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"})
 let url=URL.createObjectURL(blob)
-
 let a=document.createElement("a")
 a.href=url
 a.download=`backup-capoeira-${Date.now()}.json`
 a.click()
-
 URL.revokeObjectURL(url)
 }
 
@@ -387,7 +439,7 @@ alert("Backup inválido")
 return
 }
 
-if(!confirm("Deseja restaurar o backup?")){
+if(!confirm("Deseja restaurar o backup? Isso substituirá os dados atuais.")){
 return
 }
 
@@ -413,12 +465,12 @@ navigator.serviceWorker.register("service-worker.js")
 </script>
 
 <script>
-window.addEventListener("load",()=>{
-const emailSalvo=localStorage.getItem("email")
-const senhaSalva=localStorage.getItem("senha")
+window.addEventListener("load", ()=>{
+const emailSalvo = localStorage.getItem("email");
+const senhaSalva = localStorage.getItem("senha");
 
 if(emailSalvo){
-document.getElementById("email").value=emailSalvo
+document.getElementById("email").value=emailSalvo;
 document.getElementById("lembrar").checked=true
 }
 
@@ -450,9 +502,6 @@ document.getElementById("msg").innerText="Preencha todos os campos"
 return
 }
 
-try{
-await window.signInWithEmailAndPassword(window.auth,email,senha)
-
 if(lembrar){
 localStorage.setItem("email",email)
 localStorage.setItem("senha",senha)
@@ -466,13 +515,9 @@ document.getElementById("loginBox").style.display="none"
 if(window.carregarNuvemAuto){
 await window.carregarNuvemAuto()
 }
-
-}catch(error){
-document.getElementById("msg").innerText="Email ou senha inválidos"
-}
 }
 
-document.addEventListener("keydown",function(e){
+document.addEventListener("keydown", function(e){
 if(e.key==="Enter"){
 const loginAberto=document.getElementById("loginBox")
 if(loginAberto && loginAberto.style.display!=="none"){
@@ -485,7 +530,6 @@ loginSistema()
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyB7BDjrePNqatQqtuCzGXoClV6lIeKLk9w",
@@ -498,10 +542,6 @@ appId: "1:70101213285:web:b3c5e1fb02ec43b93b268c"
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
-const auth = getAuth(app)
-
-window.auth = auth
-window.signInWithEmailAndPassword = signInWithEmailAndPassword
 
 window.autoBackupNuvem = async function(){
 try{
@@ -510,7 +550,7 @@ alunos: alunos,
 atualizadoEm: new Date().toISOString()
 })
 }catch(error){
-console.log(error)
+console.log("Erro backup automático",error)
 }
 }
 
@@ -526,7 +566,7 @@ localStorage.setItem("alunos",JSON.stringify(alunos))
 render()
 }
 }catch(error){
-console.log(error)
+console.log("Erro ao carregar backup",error)
 }
 }
 </script>

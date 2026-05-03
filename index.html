@@ -152,6 +152,7 @@ box-shadow:0 0 8px #00000055;
 transform:scale(1.05);
 }
 
+/* LOGIN APPEND ONLY */
 #loginBox{
 position:fixed;
 inset:0;
@@ -161,7 +162,6 @@ align-items:center;
 background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fundo.png") center/cover no-repeat;
 z-index:99999;
 }
-
 .login-card{
 width:380px;
 background:rgba(255,255,255,.08);
@@ -173,7 +173,6 @@ text-align:center;
 box-shadow:0 15px 45px rgba(0,0,0,.55);
 border:1px solid rgba(255,255,255,.08);
 }
-
 .logo{
 width:75px;
 height:75px;
@@ -185,7 +184,6 @@ align-items:center;
 justify-content:center;
 font-size:32px;
 }
-
 .login-input{
 width:100%;
 padding:14px;
@@ -197,50 +195,74 @@ background:rgba(255,255,255,.12);
 color:#fff;
 font-size:15px;
 }
-
-.login-row{
-display:flex;
-align-items:center;
-justify-content:flex-start;
-font-size:14px;
-margin:8px 0 14px 0;
-}
-
-.eye{
-position:absolute;
-right:14px;
-top:50%;
-transform:translateY(-50%);
-cursor:pointer;
-font-size:18px;
-}
+.login-row{display:flex;align-items:center;justify-content:flex-start;font-size:14px;margin:8px 0 14px 0;}
+.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;}
 </style>
+<!-- APPEND ONLY FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+setDoc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAKQZs5o4_QW9ULmURuD41c71RUhbFEBpA",
+  authDomain: "teste13-f8916.firebaseapp.com",
+  projectId: "teste13-f8916",
+  storageBucket: "teste13-f8916.firebasestorage.app",
+  messagingSenderId: "258815779418",
+  appId: "1:258815779418:web:458e9f2ebc4bb94d736e63",
+  measurementId: "G-G6B8Y3335Q"
+};
+
+const app = initializeApp(firebaseConfig);
+
+window.auth = getAuth(app);
+window.db = getFirestore(app);
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.onAuthStateChanged = onAuthStateChanged;
+window.doc = doc;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
+
+window.professorUID = null;
+</script>
 </head>
 
 <body>
 
+<!-- APPEND ONLY: LOGIN -->
 <div id="loginBox">
-<div class="login-card">
-<div class="logo">🔐</div>
-<h3>Acesso ao Sistema</h3>
+  <div class="login-card">
+    <div class="logo">🔐</div>
+    <h3>Acesso ao Sistema</h3>
+    <input id="email" class="login-input" type="email" placeholder="Digite seu email">
 
-<input id="email" class="login-input" type="email" placeholder="Digite seu email">
+    <div class="login-row">
+      <label>
+        <input type="checkbox" id="lembrar">
+        <span>Lembrar dados</span>
+      </label>
+    </div>
 
-<div class="login-row">
-<label>
-<input type="checkbox" id="lembrar">
-<span>Lembrar dados</span>
-</label>
-</div>
+    <div style="position:relative">
+      <input id="password" class="login-input" type="password" placeholder="Digite sua senha">
+      <span class="eye" onclick="toggleSenha()">👁</span>
+    </div>
 
-<div style="position:relative">
-<input id="password" class="login-input" type="password" placeholder="Digite sua senha">
-<span class="eye" onclick="toggleSenha()">👁</span>
-</div>
-
-<button class="btn" onclick="loginSistema()">Entrar</button>
-<p id="msg"></p>
-</div>
+    <button class="btn" onclick="loginSistema()">Entrar</button>
+    <p id="msg"></p>
+  </div>
 </div>
 
 <div class="container">
@@ -253,15 +275,6 @@ font-size:18px;
 <div class="box">💰 Pagas<br><span id="dPagas">0</span></div>
 <div class="box">⚠️ Atraso<br><span id="dAtraso">0</span></div>
 <div class="box">📉 Inad<br><span id="dInad">0%</span></div>
-
-<div class="box">
-<button class="btn" onclick="fazerBackup()">📦 Backup</button>
-</div>
-
-<div class="box">
-<button class="btn-warning" onclick="document.getElementById('restoreFile').click()">📥 Restaurar</button>
-<input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restaurarBackup(event)">
-</div>
 </div>
 
 <div class="card">
@@ -301,10 +314,44 @@ font-size:18px;
 </div>
 </div>
 
-<footer style="width:100%;padding:20px 15px;text-align:center;background:linear-gradient(to top,#000,#111);color:white;border-top:2px solid #00e676;font-family:Arial,sans-serif;line-height:1.8;margin-top:30px;box-sizing:border-box;">
-<p style="margin:0;font-size:18px;font-weight:bold;color:#ffffff;">Gestão Financeira</p>
-<p style="margin:4px 0;font-size:13px;color:#cccccc;">Versão 2.5</p>
-<p style="margin:4px 0;font-size:12px;color:#999999;">© 2026 Todos os direitos reservados</p>
+<footer style="
+width:100%;
+padding:20px 15px;
+text-align:center;
+background:linear-gradient(to top,#000,#111);
+color:white;
+border-top:2px solid #00e676;
+font-family:Arial,sans-serif;
+line-height:1.8;
+margin-top:30px;
+box-sizing:border-box;
+">
+
+    <p style="
+    margin:0;
+    font-size:18px;
+    font-weight:bold;
+    color:#ffffff;
+    ">
+        Gestão Financeira
+    </p>
+
+    <p style="
+    margin:4px 0;
+    font-size:13px;
+    color:#cccccc;
+    ">
+        Versão 2.5
+    </p>
+
+    <p style="
+    margin:4px 0;
+    font-size:12px;
+    color:#999999;
+    ">
+        © 2026 Todos os direitos reservados
+    </p>
+
 </footer>
 
 <div class="fab" onclick="toggleForm()">+</div>
@@ -318,10 +365,6 @@ let editandoIndex=null
 
 function salvar(){
 localStorage.setItem("alunos",JSON.stringify(alunos))
-
-if(window.autoBackupNuvem){
-window.autoBackupNuvem()
-}
 }
 
 function toggleForm(){
@@ -375,33 +418,7 @@ function atualizarAluno(){let nome=$("nome").value.trim();let apelido=$("apelido
 function toggleAluno(i){alunos.forEach((a,idx)=>{if(idx!==i) a.open=false});alunos[i].open=!alunos[i].open;render()}
 function togglePago(i,p){alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago;salvar();render()}
 
-function cobrarAluno(i,p){
-let a=alunos[i]
-
-if(!a.tel) return alert("Sem WhatsApp")
-
-let num=a.tel.replace(/\D/g,"")
-
-if(num.length===11) num="55"+num
-if(num.length<12) return alert("Número inválido")
-
-let parcela=a.parcelas[p]
-
-let msg=`Olá, ${a.nome}! 👋
-Tudo bem?
-
-Identificamos que sua mensalidade ainda está em aberto. Seguem os detalhes:
-
-📅 Parcela: ${parcela.numero}
-📆 Vencimento: ${parcela.data}
-💰 Valor: R$ ${a.valor}
-
-Caso já tenha realizado o pagamento, por favor desconsidere esta mensagem.
-
-Se precisar de qualquer ajuda ou tiver alguma dúvida, estou à disposição 🙂`
-
-window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)
-}
+function cobrarAluno(i,p){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let parcela=a.parcelas[p];let [dia,mes,ano]=parcela.data.split("/");const mesesNome=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];let referencia=`${mesesNome[parseInt(mes)-1]}/${ano}`;let msg=`Olá, ${a.nome}! 👋\nTudo bem?\n\nIdentificamos que sua mensalidade referente ao mês de ${referencia} ainda está em aberto.\n\n🗓️ Vencimento: ${parcela.data}\n💰 Valor total: R$ ${a.valor}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
 
 function cobrarTudo(i){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());if(!atrasadas.length){alert("Esse aluno não possui parcelas atrasadas");return}let total=atrasadas.length*a.valor;let listaParcelas=atrasadas.map(p=>`• ${p.data}`).join("\n");let msg=`Olá, ${a.nome}! 👋\nVocê possui ${atrasadas.length} mensalidades em aberto.\n\n${listaParcelas}\n\n💵 Total pendente: R$ ${total}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
 
@@ -412,163 +429,156 @@ render()
 function excluirAluno(i){if(!confirm("Deseja realmente excluir este aluno?")) return;alunos.splice(i,1);salvar();render()}
 
 function editarAluno(i){let a=alunos[i];$("nome").value=a.nome;$("apelido").value=a.apelido||"";$("valor").value=a.valor;$("tel").value=a.tel||"";$("meses").value=a.parcelas.length;let primeira=a.parcelas[0].data.split("/");$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`;editandoIndex=i;$("btnSalvar").innerText="Atualizar";$("form").classList.add("ativo");window.scrollTo({top:$("form").offsetTop-20,behavior:"smooth"})}
-
-function fazerBackup(){
-let dados={data:new Date().toISOString(),alunos:alunos}
-let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"})
-let url=URL.createObjectURL(blob)
-let a=document.createElement("a")
-a.href=url
-a.download=`backup-capoeira-${Date.now()}.json`
-a.click()
-URL.revokeObjectURL(url)
-}
-
-function restaurarBackup(event){
-let arquivo=event.target.files[0]
-if(!arquivo) return
-
-let reader=new FileReader()
-
-reader.onload=function(e){
-try{
-let dados=JSON.parse(e.target.result)
-
-if(!dados.alunos){
-alert("Backup inválido")
-return
-}
-
-if(!confirm("Deseja restaurar o backup? Isso substituirá os dados atuais.")){
-return
-}
-
-alunos=dados.alunos
-salvar()
-render()
-
-alert("Backup restaurado com sucesso!")
-
-}catch{
-alert("Erro ao restaurar backup")
-}
-}
-
-reader.readAsText(arquivo)
-}
 </script>
 
 <script>
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("service-worker.js")
-}
+if("serviceWorker" in navigator){navigator.serviceWorker.register("service-worker.js")}
 </script>
 
+<!-- APPEND ONLY: LOGIN JS -->
 <script>
 window.addEventListener("load", ()=>{
-const emailSalvo = localStorage.getItem("email");
-const senhaSalva = localStorage.getItem("senha");
-
-if(emailSalvo){
-document.getElementById("email").value=emailSalvo;
-document.getElementById("lembrar").checked=true
-}
-
-if(senhaSalva){
-document.getElementById("password").value=senhaSalva
-}
+  const emailSalvo = localStorage.getItem("email");
+  const senhaSalva = localStorage.getItem("senha");
+  if(emailSalvo){document.getElementById("email").value=emailSalvo;document.getElementById("lembrar").checked=true}
+  if(senhaSalva){document.getElementById("password").value=senhaSalva}
 })
 
 function toggleSenha(){
-const p=document.getElementById("password")
-const eye=document.querySelector(".eye")
-
-if(p.type==="password"){
-p.type="text"
-eye.innerHTML="◉"
-}else{
-p.type="password"
-eye.innerHTML="👁"
-}
-}
-
-async function loginSistema(){
-const email=document.getElementById("email").value.trim()
-const senha=document.getElementById("password").value.trim()
-const lembrar=document.getElementById("lembrar").checked
-
-if(!email||!senha){
-document.getElementById("msg").innerText="Preencha todos os campos"
-return
+  const p=document.getElementById("password")
+  const eye=document.querySelector(".eye")
+  if(p.type==="password"){
+    p.type="text"
+    eye.innerHTML="◉"
+  }else{
+    p.type="password"
+    eye.innerHTML="👁"
+  }
 }
 
-if(lembrar){
-localStorage.setItem("email",email)
-localStorage.setItem("senha",senha)
-}else{
-localStorage.removeItem("email")
-localStorage.removeItem("senha")
-}
+function loginSistema(){
+  const email=document.getElementById("email").value.trim()
+  const senha=document.getElementById("password").value.trim()
+  const lembrar=document.getElementById("lembrar").checked
 
-document.getElementById("loginBox").style.display="none"
+  if(!email||!senha){
+    document.getElementById("msg").innerText="Preencha todos os campos"
+    return
+  }
 
-if(window.carregarNuvemAuto){
-await window.carregarNuvemAuto()
-}
+  if(lembrar){
+    localStorage.setItem("email",email)
+    localStorage.setItem("senha",senha)
+  }else{
+    localStorage.removeItem("email")
+    localStorage.removeItem("senha")
+  }
+
+  document.getElementById("loginBox").style.display="none"
 }
 
 document.addEventListener("keydown", function(e){
-if(e.key==="Enter"){
-const loginAberto=document.getElementById("loginBox")
-if(loginAberto && loginAberto.style.display!=="none"){
-loginSistema()
-}
-}
+  if(e.key==="Enter"){
+    const loginAberto=document.getElementById("loginBox")
+    if(loginAberto && loginAberto.style.display!=="none"){
+      loginSistema()
+    }
+  }
 })
+
 </script>
 
+<!-- APPEND ONLY LOGIN FIREBASE + NUVEM -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-apiKey: "AIzaSyB7BDjrePNqatQqtuCzGXoClV6lIeKLk9w",
-authDomain: "testedoteste-70d06.firebaseapp.com",
-projectId: "testedoteste-70d06",
-storageBucket: "testedoteste-70d06.firebasestorage.app",
-messagingSenderId: "70101213285",
-appId: "1:70101213285:web:b3c5e1fb02ec43b93b268c"
+async function salvarNuvem(){
+if(!window.professorUID)return;
+
+await window.setDoc(
+window.doc(window.db,"professores",window.professorUID),
+{
+alunos: alunos
+}
+);
+}
+
+async function carregarNuvem(){
+if(!window.professorUID)return;
+
+const snap = await window.getDoc(
+window.doc(window.db,"professores",window.professorUID)
+);
+
+if(snap.exists()){
+const dados=snap.data();
+
+if(dados.alunos){
+alunos=dados.alunos;
+localStorage.setItem("alunos",JSON.stringify(alunos));
+render();
+}
+}
+}
+
+const salvarOriginal = salvar;
+
+salvar = function(){
+salvarOriginal();
+salvarNuvem();
 };
 
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+window.onAuthStateChanged(window.auth, async(user)=>{
+if(user){
+window.professorUID=user.uid;
 
-window.autoBackupNuvem = async function(){
+await carregarNuvem();
+
+document.getElementById("loginBox").style.display="none";
+}else{
+document.getElementById("loginBox").style.display="flex";
+}
+});
+
+const loginOriginal = loginSistema;
+
+loginSistema = async function(){
+
+const email=document.getElementById("email").value.trim();
+const senha=document.getElementById("password").value.trim();
+const lembrar=document.getElementById("lembrar").checked;
+
+if(!email||!senha){
+document.getElementById("msg").innerText="Preencha todos os campos";
+return;
+}
+
 try{
-await setDoc(doc(db,"sistema","alunos"),{
-alunos: alunos,
-atualizadoEm: new Date().toISOString()
-})
-}catch(error){
-console.log("Erro backup automático",error)
-}
+
+if(lembrar){
+localStorage.setItem("email",email);
+localStorage.setItem("senha",senha);
+}else{
+localStorage.removeItem("email");
+localStorage.removeItem("senha");
 }
 
-window.carregarNuvemAuto = async function(){
-try{
-const docRef = doc(db,"sistema","alunos")
-const docSnap = await getDoc(docRef)
+const cred = await window.signInWithEmailAndPassword(
+window.auth,
+email,
+senha
+);
 
-if(docSnap.exists()){
-const dados = docSnap.data()
-alunos = dados.alunos || []
-localStorage.setItem("alunos",JSON.stringify(alunos))
-render()
+window.professorUID = cred.user.uid;
+
+await carregarNuvem();
+
+document.getElementById("loginBox").style.display="none";
+
+}catch(e){
+document.getElementById("msg").innerText="Login inválido";
 }
-}catch(error){
-console.log("Erro ao carregar backup",error)
-}
-}
+};
+
 </script>
 
 </body>

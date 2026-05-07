@@ -1,585 +1,411 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Controle de Capoeira</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Capoeira Control Pro v2.3</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f6b63">
-<link rel="apple-touch-icon" href="icon.png">
+    <style>
+        :root {
+            --primary: #00c853;
+            --primary-dark: #0f6b63;
+            --bg-dark: #0a0a0a;
+            --card-bg: #161616;
+            --input-bg: #252525;
+            --text-main: #ffffff;
+            --text-dim: #b3b3b3;
+            --danger: #ff5252;
+            --warning: #ffab40;
+            --info: #2196f3;
+            --radius: 12px;
+        }
 
-<style>
-html{scroll-behavior:smooth;}
-body{background:linear-gradient(to bottom,#0f6b63,#000);color:#fff;font-family:Arial;margin:0;background-attachment:fixed;}
-.container{max-width:1100px;margin:auto;padding:20px}
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { 
+            background: radial-gradient(circle at top, var(--primary-dark), var(--bg-dark));
+            color: var(--text-main); margin: 0; background-attachment: fixed; min-height: 100vh; padding-bottom: 50px;
+        }
 
-.card{
-background:#141414;
-padding:12px;
-border-radius:10px;
-margin-bottom:6px;
-}
+        .container { max-width: 800px; margin: auto; padding: 20px; display: none; }
 
-.form-box{max-height:0;overflow:hidden;transition:.3s}
-.form-box.ativo{max-height:600px}
+        #loginBox { position: fixed; inset: 0; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 99999; padding: 20px; }
+        .login-card { background: var(--card-bg); padding: 30px; border-radius: var(--radius); border: 1px solid var(--primary); width: 100%; max-width: 350px; text-align: center; }
+        
+        .login-header-info { margin-bottom: 25px; }
+        .login-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); margin-bottom: 10px; }
+        .login-academia-nome { font-size: 20px; font-weight: bold; color: var(--primary); display: block; text-transform: uppercase; }
+        .login-professor-nome { font-size: 14px; color: var(--text-main); opacity: 0.8; }
 
-.form-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px
-}
+        .remember-me { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; color: var(--text-dim); cursor: pointer; justify-content: center; }
+        .remember-me input { width: auto; margin: 0; cursor: pointer; }
 
-input{
-padding:10px;
-border:none;
-border-radius:5px;
-width:100%;
-box-sizing:border-box;
-background:#2b2b2b;
-color:#fff;
-transition:.2s;
-border:1px solid transparent;
-}
+        .header-academia { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.1); }
+        .logo-academia { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #222; border: 1px solid var(--primary); }
+        .info-academia h1 { margin: 0; font-size: 18px; color: var(--primary); text-transform: uppercase; }
+        .info-academia .professor { font-size: 13px; color: #fff; font-weight: bold; margin-top: 3px; }
 
-input:focus{
-outline:none;
-background:#bdbdbd;
-color:#000;
-border:2px solid #00e676;
-box-shadow:0 0 14px #00e676cc;
-transform:scale(1.02);
-animation:focusGlow 1.2s infinite alternate;
-}
+        .header-nav { display: flex; justify-content: space-between; align-items:center; margin-bottom: 20px; }
+        .settings-btn { font-size: 22px; cursor: pointer; background: rgba(255,255,255,0.1); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .box { background: var(--card-bg); padding: 15px; border-radius: var(--radius); text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .box span { font-size: 24px; font-weight: bold; color: var(--primary); display: block; }
 
-@keyframes focusGlow{
-0%{box-shadow:0 0 8px #00e67666;}
-100%{box-shadow:0 0 16px #00e676dd;}
-}
+        .card { background: var(--card-bg); padding: 20px; border-radius: var(--radius); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .form-box { max-height: 0; overflow: hidden; transition: 0.4s; }
+        .form-box.ativo { max-height: 1500px; padding-top: 20px; }
+        
+        .photo-upload { width: 80px; height: 80px; background: var(--input-bg); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px dashed var(--primary); overflow: hidden; position: relative; }
+        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
 
-.form-full{grid-column:span 2}
+        label { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 5px; margin-top: 10px; }
+        input, select, textarea { padding: 12px; border: 2px solid transparent; border-radius: 8px; width: 100%; background: var(--input-bg); color: #fff; font-size: 14px; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn { background: var(--primary); color: #000; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-info { background: var(--info); color: #fff; }
 
-button{
-padding:6px;
-border:none;
-border-radius:5px;
-cursor:pointer;
-font-size:12px
-}
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 10px; overflow-x: auto; }
+        .tabs button { flex: 1; background: transparent; color: var(--text-dim); white-space: nowrap; font-size: 11px; }
+        .tabs button.abaAtiva { background: var(--card-bg); color: var(--primary); }
 
-.btn{background:#00c853;color:#fff}
-.btn-danger{background:#ff5252;color:#fff}
-.btn-warning{background:#ff9800;color:#fff}
+        .aluno { background: #1e1e1e; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .aluno-header { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .aluno-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary); }
+        .parcelas { display: none; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px; }
+        .parcelas.ativo { display: block; }
+        .parcela { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 8px; }
 
-.aluno{
-border:1px solid #333;
-border-radius:10px;
-padding:8px;
-margin-bottom:6px
-}
-
-.aluno h3{
-margin:0;
-cursor:pointer;
-font-size:15px
-}
-
-.parcelas{
-max-height:70vh;
-overflow-y:auto;
-transition:.3s
-}
-
-.parcelas.ativo{
-padding-top:5px
-}
-
-.parcela{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:4px 0;
-font-size:14px
-}
-
-.parcela-botoes{
-display:flex;
-gap:4px;
-flex-wrap:wrap
-}
-
-.dashboard{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px
-}
-
-.box{
-background:#1b1b1b;
-padding:10px;
-border-radius:10px;
-text-align:center
-}
-
-.fab{
-position:fixed;
-bottom:20px;
-right:20px;
-width:60px;
-height:60px;
-border-radius:50%;
-background:#25D366;
-color:#fff;
-font-size:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-z-index:9999;
-}
-
-#topoMensalidade{
-position:sticky;
-top:0;
-background:#141414;
-z-index:5;
-padding-top:5px;
-}
-
-.abaAtiva{
-background:#ffffff22 !important;
-box-shadow:0 0 8px #00000055;
-transform:scale(1.05);
-}
-
-/* LOGIN APPEND ONLY */
-#loginBox{
-position:fixed;
-inset:0;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fundo.png") center/cover no-repeat;
-z-index:99999;
-}
-.login-card{
-width:380px;
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(18px);
--webkit-backdrop-filter:blur(18px);
-padding:35px;
-border-radius:22px;
-text-align:center;
-box-shadow:0 15px 45px rgba(0,0,0,.55);
-border:1px solid rgba(255,255,255,.08);
-}
-.logo{
-width:75px;
-height:75px;
-margin:0 auto 20px;
-border-radius:50%;
-background:linear-gradient(45deg,#00c853,#00e676);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:32px;
-}
-.login-input{
-width:100%;
-padding:14px;
-margin-bottom:14px;
-border:none;
-outline:none;
-border-radius:12px;
-background:rgba(255,255,255,.12);
-color:#fff;
-font-size:15px;
-}
-.login-row{display:flex;align-items:center;justify-content:flex-start;font-size:14px;margin:8px 0 14px 0;}
-.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;}
-</style>
-<!-- APPEND ONLY FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-getAuth,
-signInWithEmailAndPassword,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-getFirestore,
-doc,
-setDoc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAKQZs5o4_QW9ULmURuD41c71RUhbFEBpA",
-  authDomain: "teste13-f8916.firebaseapp.com",
-  projectId: "teste13-f8916",
-  storageBucket: "teste13-f8916.firebasestorage.app",
-  messagingSenderId: "258815779418",
-  appId: "1:258815779418:web:458e9f2ebc4bb94d736e63",
-  measurementId: "G-G6B8Y3335Q"
-};
-
-const app = initializeApp(firebaseConfig);
-
-window.auth = getAuth(app);
-window.db = getFirestore(app);
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-window.onAuthStateChanged = onAuthStateChanged;
-window.doc = doc;
-window.setDoc = setDoc;
-window.getDoc = getDoc;
-
-window.professorUID = null;
-</script>
+        #configMenu { display:none; position:fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 15px; overflow-y: auto; }
+        .config-container { max-width: 500px; margin: 20px auto; background: var(--card-bg); padding: 25px; border-radius: var(--radius); border: 1px solid var(--primary); }
+    </style>
 </head>
-
 <body>
 
-<!-- APPEND ONLY: LOGIN -->
 <div id="loginBox">
-  <div class="login-card">
-    <div class="logo">🔐</div>
-    <h3>Acesso ao Sistema</h3>
-    <input id="email" class="login-input" type="email" placeholder="Digite seu email">
+    <div class="login-card">
+        <div class="login-header-info">
+            <img id="loginLogoImg" class="login-logo" src="https://cdn-icons-png.flaticon.com/512/3233/3233514.png">
+            <span id="loginNomeAcad" class="login-academia-nome">Aguarde...</span>
+            <div id="loginNomeProf" class="login-professor-nome">Carregando dados</div>
+        </div>
+        <input id="lUser" placeholder="E-mail">
+        <input id="lPass" type="password" placeholder="Senha" style="margin-top:10px">
+        <label class="remember-me">
+            <input type="checkbox" id="chkLembrar"> Lembrar meu e-mail
+        </label>
+        <button id="btnEntrar" class="btn" style="width:100%; margin-top:20px" onclick="entrar()">ENTRAR</button>
+        <button class="btn-info" style="width:100%; margin-top:10px; background: #333" onclick="cadastrar()">CRIAR CONTA</button>
+    </div>
+</div>
 
-    <div class="login-row">
-      <label>
-        <input type="checkbox" id="lembrar">
-        <span>Lembrar dados</span>
-      </label>
+<div id="configMenu">
+    <div class="config-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color:var(--primary); margin:0;">⚙️ Configurações</h2>
+            <button onclick="toggleSettings()" style="background:none; color:var(--danger); font-size: 28px;">×</button>
+        </div>
+        <div class="tabs">
+            <button id="btnSetGeral" class="abaAtiva" onclick="mudarTabConfig('Geral')">GERAL</button>
+            <button id="btnSetMsg" onclick="mudarTabConfig('Msg')">COBRANÇA</button>
+            <button id="btnSetDados" onclick="mudarTabConfig('Dados')">CONTA</button>
+        </div>
+        <div id="setGeral">
+            <div class="photo-upload" onclick="$('cfgFileLogo').click()">
+                <img id="cfgLogoPreview" src="">
+            </div>
+            <input type="file" id="cfgFileLogo" hidden onchange="previewImg(this, 'cfgLogoPreview')">
+            <label>Nome da Academia</label><input id="cfgNome">
+            <label>Professor Responsável</label><input id="cfgProf">
+            <label>Chave PIX</label><input id="cfgPix">
+            <button id="btnSalvarConfig" class="btn" style="width:100%; margin-top:25px" onclick="salvarConfig()">💾 SALVAR NA NUVEM</button>
+            
+            <input type="file" id="fileBackup" accept=".json" style="display:none" onchange="processarArquivoBackup(this)">
+            <button class="btn-info" style="width:100%; margin-top:10px; background: #444" onclick="$('fileBackup').click()">📥 RESTAURAR DO DISPOSITIVO</button>
+        </div>
+        <div id="setMsg" style="display:none">
+            <label>Modelo de Mensagem</label>
+            <textarea id="cfgMsg" rows="10"></textarea>
+            <button class="btn" style="width:100%; margin-top:25px" onclick="salvarConfig()">💾 SALVAR MENSAGEM</button>
+        </div>
+        <div id="setDados" style="display:none">
+            <button class="btn-danger" style="width:100%" onclick="logout()">ENCERRAR SESSÃO</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="mainApp">
+    <div class="header-academia">
+        <img id="logoTopo" class="logo-academia" src="">
+        <div class="info-academia">
+            <h1 id="nomeTopo">Academia</h1>
+            <div id="profTopo" class="professor">Professor</div>
+        </div>
+    </div>
+    <div class="header-nav">
+        <h2 style="margin:0">Gestão</h2>
+        <div class="settings-btn" onclick="toggleSettings()">⚙️</div>
+    </div>
+    <div class="dashboard">
+        <div class="box"><small>ALUNOS</small><span id="dAlunos">0</span></div>
+        <div class="box"><small>EM ATRASO</small><span id="dAtraso" style="color:var(--danger)">0</span></div>
     </div>
 
-    <div style="position:relative">
-      <input id="password" class="login-input" type="password" placeholder="Digite sua senha">
-      <span class="eye" onclick="toggleSenha()">👁</span>
+    <div class="card">
+        <h3 onclick="toggleForm()" style="cursor:pointer; margin:0; display:flex; justify-content:space-between">
+            <span>➕ Novo Aluno</span>
+            <span style="font-size:12px; color:var(--primary)">ABRIR</span>
+        </h3>
+        <div id="form" class="form-box">
+            <div class="photo-upload" onclick="$('alunoFileFoto').click()"><img id="alunoFotoPreview" src="https://via.placeholder.com/80"></div>
+            <input type="file" id="alunoFileFoto" hidden onchange="previewImg(this, 'alunoFotoPreview')">
+            <div style="display:flex; gap:10px">
+                <div style="flex:1"><label>Nome</label><input id="nome"></div>
+                <div style="flex:1"><label>Apelido</label><input id="apelido"></div>
+            </div>
+            <label>WhatsApp</label><input id="tel" type="tel">
+            <div style="display:flex; gap:10px">
+                <div style="flex:1"><label>Valor</label><input id="valor" type="number"></div>
+                <div style="flex:1"><label>1º Vencimento</label><input id="venc" type="date"></div>
+            </div>
+            <label>Parcelas</label><input id="meses" type="number" value="12">
+            <button class="btn" style="width:100%; margin-top:15px" onclick="salvarAluno()">CADASTRAR</button>
+        </div>
     </div>
 
-    <button class="btn" onclick="loginSistema()">Entrar</button>
-    <p id="msg"></p>
-  </div>
+    <input id="inputBusca" placeholder="🔍 Buscar aluno por nome ou apelido..." oninput="render()" style="margin-bottom:15px">
+
+    <div class="card" style="padding:10px">
+        <div class="tabs">
+            <button id="tAtr" class="abaAtiva" onclick="trocarAba('atrasado')">🔴 ATRASADOS</button>
+            <button id="tPen" onclick="trocarAba('pendente')">🟡 PRÓXIMOS</button>
+            <button id="tDia" onclick="trocarAba('pago')">🟢 EM DIA</button>
+        </div>
+        <div id="lista"></div>
+    </div>
 </div>
-
-<div class="container">
-<div id="sistema">
-
-<h2>🥋 Controle de Capoeira</h2>
-
-<div class="card dashboard">
-<div class="box">👥 Alunos<br><span id="dAlunos">0</span></div>
-<div class="box">💰 Pagas<br><span id="dPagas">0</span></div>
-<div class="box">⚠️ Atraso<br><span id="dAtraso">0</span></div>
-<div class="box">📉 Inad<br><span id="dInad">0%</span></div>
-</div>
-
-<div class="card">
-<h3 style="cursor:pointer" onclick="toggleForm()">Adicionar Aluno</h3>
-
-<div id="form" class="form-box">
-<div class="form-grid">
-<input id="nome" placeholder="Nome">
-<input id="apelido" placeholder="Apelido">
-<input id="valor" type="number" placeholder="Valor">
-<input id="venc" type="date">
-<input id="meses" type="number" placeholder="Meses">
-<input id="tel" type="tel" placeholder="WhatsApp">
-
-<button id="btnSalvar" class="btn form-full" onclick="salvarAluno()">Salvar</button>
-</div>
-</div>
-</div>
-
-<div class="card">
-<h3>💰 Mensalidades</h3>
-
-<div id="mensalidade" class="parcelas ativo">
-<div id="topoMensalidade">
-<div style="display:flex;gap:5px;margin-bottom:8px">
-<button id="btnPend" class="btn" onclick="trocarAba('pendente')">Pendente</button>
-<button id="btnAtraso" class="btn btn-warning abaAtiva" onclick="trocarAba('atrasado')">Atrasado</button>
-<button id="btnEmDia" class="btn" onclick="trocarAba('emdia')">Em dia</button>
-</div>
-
-<input id="busca" placeholder="🔎 Buscar aluno..." oninput="render()" style="margin-bottom:8px;padding:8px;border-radius:5px;border:none;width:100%">
-</div>
-<div id="lista"></div>
-</div>
-</div>
-
-</div>
-</div>
-
-<footer style="
-width:100%;
-padding:20px 15px;
-text-align:center;
-background:linear-gradient(to top,#000,#111);
-color:white;
-border-top:2px solid #00e676;
-font-family:Arial,sans-serif;
-line-height:1.8;
-margin-top:30px;
-box-sizing:border-box;
-">
-
-    <p style="
-    margin:0;
-    font-size:18px;
-    font-weight:bold;
-    color:#ffffff;
-    ">
-        Gestão Financeira
-    </p>
-
-    <p style="
-    margin:4px 0;
-    font-size:13px;
-    color:#cccccc;
-    ">
-        Versão 2.5
-    </p>
-
-    <p style="
-    margin:4px 0;
-    font-size:12px;
-    color:#999999;
-    ">
-        © 2026 Todos os direitos reservados
-    </p>
-
-</footer>
-
-<div class="fab" onclick="toggleForm()">+</div>
 
 <script>
-const $=id=>document.getElementById(id)
+    const $ = id => document.getElementById(id);
 
-let alunos=JSON.parse(localStorage.getItem("alunos"))||[]
-let abaAtual="atrasado"
-let editandoIndex=null
+    const firebaseConfig = {
+        apiKey: "AIzaSyBaR3l4VXYRIHyvcyqMco6Sy4_-eYGpR8g",
+        authDomain: "teste02-ce0d2.firebaseapp.com",
+        projectId: "teste02-ce0d2",
+        storageBucket: "teste02-ce0d2.firebasestorage.app",
+        messagingSenderId: "389717337129",
+        appId: "1:389717337129:web:fdc718e47ff6ea73f96838"
+    };
 
-function salvar(){
-localStorage.setItem("alunos",JSON.stringify(alunos))
-}
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-function toggleForm(){
-$("form").classList.toggle("ativo")
-}
+    let alunos = [];
+    let config = {
+        nome: "Sua Academia", prof: "Professor", pix: "",
+        logo: "https://cdn-icons-png.flaticon.com/512/3233/3233514.png",
+        msg: "*COBRANÇA* 🥋\n\nOlá, *[nome]*!"
+    };
 
-function trocarAba(a){
-abaAtual=a
-$("btnPend").classList.remove("abaAtiva")
-$("btnAtraso").classList.remove("abaAtiva")
-$("btnEmDia").classList.remove("abaAtiva")
-if(a=="pendente") $("btnPend").classList.add("abaAtiva")
-if(a=="atrasado") $("btnAtraso").classList.add("abaAtiva")
-if(a=="emdia") $("btnEmDia").classList.add("abaAtiva")
-render()
-}
+    window.onload = () => {
+        auth.signOut();
+        const savedConfig = JSON.parse(localStorage.getItem('capoeira_config'));
+        if(savedConfig) { config = savedConfig; aplicarIdentidadeVisual(config); }
+        const savedEmail = localStorage.getItem('capoeira_email');
+        if(savedEmail) { $("lUser").value = savedEmail; $("chkLembrar").checked = true; }
+    };
 
-function limparForm(){
-["nome","apelido","valor","venc","meses","tel"].forEach(i=>{$(i).value=""})
-editandoIndex=null
-$("btnSalvar").innerText="Salvar"
-}
-
-function formatar(d){
-let x=new Date(d)
-return `${String(x.getDate()).padStart(2,"0")}/${String(x.getMonth()+1).padStart(2,"0")}/${x.getFullYear()}`
-}
-
-function dataBR(d){
-let [dia,mes,ano]=d.split("/")
-return new Date(ano,mes-1,dia)
-}
-
-function gerarParcelas(v,m){
-let base=new Date(v)
-let arr=[]
-for(let i=0;i<m;i++){
-let d=new Date(base)
-d.setMonth(d.getMonth()+i)
-arr.push({numero:i+1,data:formatar(d),pago:false})
-}
-return arr
-}
-
-function salvarAluno(){if(editandoIndex===null){addAluno()}else{atualizarAluno()}}
-
-function addAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}if(apelido && alunos.some(a=>(a.apelido||"").toLowerCase()===apelido.toLowerCase())){alert("Já existe um aluno com esse apelido!");return}alunos.push({nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses),open:false});salvar();render();limparForm();$("form").classList.remove("ativo")}
-
-function atualizarAluno(){let nome=$("nome").value.trim();let apelido=$("apelido").value.trim();let valor=$("valor").value;let venc=$("venc").value;let meses=$("meses").value;let tel=$("tel").value.trim();if(!nome||!valor||!venc||!meses){alert("Preencha tudo");return}alunos[editandoIndex]={...alunos[editandoIndex],nome,apelido,valor:+valor,tel,parcelas:gerarParcelas(venc,meses)};editandoIndex=null;$("btnSalvar").innerText="Salvar";salvar();render();limparForm();$("form").classList.remove("ativo")}
-
-function toggleAluno(i){alunos.forEach((a,idx)=>{if(idx!==i) a.open=false});alunos[i].open=!alunos[i].open;render()}
-function togglePago(i,p){alunos[i].parcelas[p].pago=!alunos[i].parcelas[p].pago;salvar();render()}
-
-function cobrarAluno(i,p){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let parcela=a.parcelas[p];let [dia,mes,ano]=parcela.data.split("/");const mesesNome=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];let referencia=`${mesesNome[parseInt(mes)-1]}/${ano}`;let msg=`Olá, ${a.nome}! 👋\nTudo bem?\n\nIdentificamos que sua mensalidade referente ao mês de ${referencia} ainda está em aberto.\n\n🗓️ Vencimento: ${parcela.data}\n💰 Valor total: R$ ${a.valor}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
-
-function cobrarTudo(i){let a=alunos[i];if(!a.tel) return alert("Sem WhatsApp");let num=a.tel.replace(/\D/g,"");if(num.length===11) num="55"+num;if(num.length<12) return alert("Número inválido");let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());if(!atrasadas.length){alert("Esse aluno não possui parcelas atrasadas");return}let total=atrasadas.length*a.valor;let listaParcelas=atrasadas.map(p=>`• ${p.data}`).join("\n");let msg=`Olá, ${a.nome}! 👋\nVocê possui ${atrasadas.length} mensalidades em aberto.\n\n${listaParcelas}\n\n💵 Total pendente: R$ ${total}`;window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`)}
-
-function render(){let lista=$("lista");lista.innerHTML="";let termo=$("busca").value.toLowerCase();let pagas=0;let atraso=0;let alunosEmDia=0;let alunosEmAtraso=0;let ordenados=alunos.map((a,i)=>({a,i})).sort((x,y)=>x.a.nome.localeCompare(y.a.nome,"pt-BR",{sensitivity:"base"}));ordenados.forEach(({a,i})=>{if(termo&&!a.nome.toLowerCase().includes(termo)&&!(a.apelido||"").toLowerCase().includes(termo)) return;let atrasadas=a.parcelas.filter(p=>!p.pago && dataBR(p.data)<new Date());let pagasArr=a.parcelas.filter(p=>p.pago);let pend=a.parcelas.filter(p=>!p.pago && dataBR(p.data)>=new Date());pagas+=pagasArr.length;atraso+=atrasadas.length;if(atrasadas.length>0){alunosEmAtraso++}else{alunosEmDia++}let exibir=abaAtual=="pendente"?pend:abaAtual=="emdia"?pagasArr:atrasadas;let infoExtra="";if(abaAtual=="pendente") infoExtra=`📌(${pend.length})`;if(abaAtual=="atrasado") infoExtra=`⚠️(${atrasadas.length})`;if(abaAtual=="emdia") infoExtra=`(${pagasArr.length}/${a.parcelas.length})`;let html=`<div class="aluno"><h3 onclick="toggleAluno(${i})">${a.nome} (${a.apelido||""}) ${infoExtra}</h3><div class="parcelas ${a.open?"ativo":""}">`;if(a.open){if(!exibir.length){html+=`<div style="opacity:.6">Sem parcelas</div>`}exibir.forEach(p=>{let id=a.parcelas.findIndex(x=>x===p);html+=`<div class="parcela"><span>${p.numero} - ${p.data}</span><div class="parcela-botoes"><button class="btn" onclick="editarAluno(${i})">Editar</button><button class="btn-warning" onclick="cobrarAluno(${i},${id})">Cobrar</button>${atrasadas.length>=2?`<button class="btn" onclick="cobrarTudo(${i})">Cobrar Tudo</button>`:""}<button class="btn-danger" onclick="excluirAluno(${i})">Excluir</button><button onclick="togglePago(${i},${id})">${p.pago?"✔":"❌"}</button></div></div>`})}html+=`</div></div>`;lista.innerHTML+=html});$("dAlunos").innerText=alunos.length;$("dPagas").innerText=pagas;$("dAtraso").innerText=atraso;$("dInad").innerText=(alunosEmDia+alunosEmAtraso?((alunosEmAtraso/(alunosEmDia+alunosEmAtraso))*100).toFixed(1):0)+"%"}
-
-render()
-
-function excluirAluno(i){if(!confirm("Deseja realmente excluir este aluno?")) return;alunos.splice(i,1);salvar();render()}
-
-function editarAluno(i){let a=alunos[i];$("nome").value=a.nome;$("apelido").value=a.apelido||"";$("valor").value=a.valor;$("tel").value=a.tel||"";$("meses").value=a.parcelas.length;let primeira=a.parcelas[0].data.split("/");$("venc").value=`${primeira[2]}-${primeira[1]}-${primeira[0]}`;editandoIndex=i;$("btnSalvar").innerText="Atualizar";$("form").classList.add("ativo");window.scrollTo({top:$("form").offsetTop-20,behavior:"smooth"})}
-</script>
-
-<script>
-if("serviceWorker" in navigator){navigator.serviceWorker.register("service-worker.js")}
-</script>
-
-<!-- APPEND ONLY: LOGIN JS -->
-<script>
-window.addEventListener("load", ()=>{
-  const emailSalvo = localStorage.getItem("email");
-  const senhaSalva = localStorage.getItem("senha");
-  if(emailSalvo){document.getElementById("email").value=emailSalvo;document.getElementById("lembrar").checked=true}
-  if(senhaSalva){document.getElementById("password").value=senhaSalva}
-})
-
-function toggleSenha(){
-  const p=document.getElementById("password")
-  const eye=document.querySelector(".eye")
-  if(p.type==="password"){
-    p.type="text"
-    eye.innerHTML="◉"
-  }else{
-    p.type="password"
-    eye.innerHTML="👁"
-  }
-}
-
-function loginSistema(){
-  const email=document.getElementById("email").value.trim()
-  const senha=document.getElementById("password").value.trim()
-  const lembrar=document.getElementById("lembrar").checked
-
-  if(!email||!senha){
-    document.getElementById("msg").innerText="Preencha todos os campos"
-    return
-  }
-
-  if(lembrar){
-    localStorage.setItem("email",email)
-    localStorage.setItem("senha",senha)
-  }else{
-    localStorage.removeItem("email")
-    localStorage.removeItem("senha")
-  }
-
-  document.getElementById("loginBox").style.display="none"
-}
-
-document.addEventListener("keydown", function(e){
-  if(e.key==="Enter"){
-    const loginAberto=document.getElementById("loginBox")
-    if(loginAberto && loginAberto.style.display!=="none"){
-      loginSistema()
+    async function entrar() {
+        const u = $("lUser").value, p = $("lPass").value, lembrar = $("chkLembrar").checked;
+        if(!u || !p) return alert("Preencha tudo!");
+        if(lembrar) localStorage.setItem('capoeira_email', u);
+        else localStorage.removeItem('capoeira_email');
+        await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+        auth.signInWithEmailAndPassword(u, p).catch(e => alert("Erro: " + e.message));
     }
-  }
-})
 
+    auth.onAuthStateChanged(user => {
+        if (user) { $("loginBox").style.display = "none"; $("mainApp").style.display = "block"; carregarDados(); }
+        else { $("loginBox").style.display = "flex"; $("mainApp").style.display = "none"; }
+    });
+
+    async function carregarDados() {
+        const doc = await db.collection('users').doc(auth.currentUser.uid).get();
+        if(doc.exists) {
+            const data = doc.data();
+            alunos = data.alunos || [];
+            if(data.config) {
+                config = data.config;
+                localStorage.setItem('capoeira_config', JSON.stringify(config));
+                aplicarIdentidadeVisual(config);
+            }
+            render();
+        }
+    }
+
+    function aplicarIdentidadeVisual(dados) {
+        if(!dados) return;
+        $("loginLogoImg").src = dados.logo;
+        $("loginNomeAcad").innerText = dados.nome;
+        $("loginNomeProf").innerText = "Prof: " + dados.prof;
+        $("logoTopo").src = dados.logo;
+        $("nomeTopo").innerText = dados.nome;
+        $("profTopo").innerText = "Professor: " + dados.prof;
+        $("cfgLogoPreview").src = dados.logo;
+        $("cfgNome").value = dados.nome;
+        $("cfgProf").value = dados.prof;
+        $("cfgPix").value = dados.pix;
+        $("cfgMsg").value = dados.msg;
+    }
+
+    // RESTAURAÇÃO CORRIGIDA (SEM RELOAD)
+    function processarArquivoBackup(input) {
+        const arquivo = input.files[0];
+        if (!arquivo) return;
+
+        const leitor = new FileReader();
+        leitor.onload = async function(e) {
+            try {
+                const dados = JSON.parse(e.target.result);
+                if (dados.alunos) {
+                    if (confirm("Deseja substituir todos os dados atuais?")) {
+                        alunos = dados.alunos;
+                        if (dados.config) config = dados.config;
+                        
+                        // Espera salvar no Firebase antes de atualizar a tela
+                        await sincronizar();
+                        
+                        // Atualiza as cores e textos sem dar F5
+                        aplicarIdentidadeVisual(config);
+                        render();
+                        
+                        alert("Backup carregado com sucesso!");
+                        toggleSettings(); // Fecha o menu
+                    }
+                } else {
+                    alert("Arquivo inválido.");
+                }
+            } catch (erro) {
+                alert("Erro ao ler o arquivo.");
+            }
+        };
+        leitor.readAsText(arquivo);
+        input.value = ""; 
+    }
+
+    async function sincronizar() {
+        if(!auth.currentUser) return;
+        await db.collection('users').doc(auth.currentUser.uid).set({ config, alunos });
+        localStorage.setItem('capoeira_config', JSON.stringify(config));
+        render();
+    }
+
+    function salvarConfig() {
+        config.nome = $("cfgNome").value; 
+        config.prof = $("cfgProf").value;
+        config.pix = $("cfgPix").value; 
+        config.msg = $("cfgMsg").value;
+        config.logo = $("cfgLogoPreview").src;
+        sincronizar().then(() => toggleSettings());
+    }
+
+    function salvarAluno() {
+        const n = $("nome").value, ap = $("apelido").value, v = parseFloat($("valor").value), d = $("venc").value;
+        if(!n || isNaN(v) || !d) return alert("Erro nos dados!");
+        const parcelas = [];
+        let [ano, mes, dia] = d.split('-');
+        for(let i=0; i<parseInt($("meses").value); i++) {
+            let dt = new Date(ano, mes-1, dia);
+            dt.setMonth(dt.getMonth() + i);
+            parcelas.push({data: dt.toLocaleDateString('pt-BR'), pago: false});
+        }
+        alunos.push({nome: n, apelido: ap, tel: $("tel").value, valor: v, foto: $("alunoFotoPreview").src, parcelas, open: false});
+        $("nome").value = ""; $("apelido").value = ""; $("tel").value = ""; 
+        sincronizar();
+        toggleForm();
+    }
+
+    let abaAtual = "atrasado";
+    function trocarAba(a) { 
+        abaAtual = a; 
+        $("tAtr").className = a === 'atrasado' ? 'abaAtiva' : '';
+        $("tPen").className = a === 'pendente' ? 'abaAtiva' : '';
+        $("tDia").className = a === 'pago' ? 'abaAtiva' : '';
+        render(); 
+    }
+
+    function render() {
+        const lista = $("lista"); lista.innerHTML = "";
+        const busca = $("inputBusca").value.toLowerCase();
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        const parseData = d => { const [dia, mes, ano] = d.split('/'); return new Date(ano, mes-1, dia); };
+        let nAtraso = 0;
+
+        alunos.forEach((a, i) => {
+            const matchesBusca = a.nome.toLowerCase().includes(busca) || (a.apelido && a.apelido.toLowerCase().includes(busca));
+            if(!matchesBusca) return;
+            const atrasadas = a.parcelas.filter(p => !p.pago && parseData(p.data) < hoje);
+            const pendentes = a.parcelas.filter(p => !p.pago && parseData(p.data) >= hoje);
+            const pagas = a.parcelas.filter(p => p.pago);
+            nAtraso += atrasadas.length;
+            let exibir = (abaAtual === 'atrasado') ? atrasadas : (abaAtual === 'pendente' ? pendentes : pagas);
+            if(exibir.length > 0 || a.open) {
+                lista.innerHTML += `
+                <div class="aluno" style="border-left-color: ${atrasadas.length ? 'var(--danger)' : 'var(--primary)'}">
+                    <div class="aluno-header" onclick="toggleAluno(${i})">
+                        <img class="aluno-img" src="${a.foto}">
+                        <div style="flex:1"><b>${a.nome}</b> ${a.apelido ? `<br><small style="color:var(--primary)">(${a.apelido})</small>` : ''}</div>
+                        <span style="background:${atrasadas.length?'var(--danger)':'#333'}; padding:3px 10px; border-radius:12px; font-size:11px">${exibir.length}</span>
+                    </div>
+                    <div class="parcelas ${a.open?'ativo':''}">
+                        ${exibir.map(p => `
+                            <div class="parcela">
+                                <div><b>R$ ${a.valor.toFixed(2)}</b><br><small>${p.data}</small></div>
+                                <div style="display:flex;gap:5px">
+                                    <button class="btn" style="background:${p.pago?'#444':'var(--primary)'}" onclick="baixar(${i}, '${p.data}')">${p.pago?'↩':'✔'}</button>
+                                    <button class="btn-info" style="background:var(--warning); padding:5px" onclick="cobrar(${i}, '${p.data}')">📱</button>
+                                    <button class="btn-danger" style="padding:5px" onclick="remover(${i})">🗑</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+        });
+        $("dAlunos").innerText = alunos.length;
+        $("dAtraso").innerText = nAtraso;
+    }
+
+    function mudarTabConfig(tab) {
+        ['Geral', 'Msg', 'Dados'].forEach(t => {
+            $(`set${t}`).style.display = t === tab ? 'block' : 'none';
+            $(`btnSet${t}`).className = t === tab ? 'abaAtiva' : '';
+        });
+    }
+
+    function baixar(ai, data) {
+        const p = alunos[ai].parcelas.find(x => x.data === data);
+        if(p) { p.pago = !p.pago; sincronizar(); }
+    }
+
+    function cobrar(idx, data) {
+        const a = alunos[idx];
+        let t = config.msg.replace("[nome]", a.apelido || a.nome).replace("[data]", data).replace("[valor]", a.valor.toFixed(2)).replace("[pix]", config.pix);
+        window.open(`https://wa.me/${a.tel.replace(/\D/g,"")}?text=${encodeURIComponent(t)}`);
+    }
+
+    function toggleSettings() { $("configMenu").style.display = $("configMenu").style.display==="block"?"none":"block"; }
+    function toggleForm() { $("form").classList.toggle("ativo"); }
+    function toggleAluno(i) { alunos[i].open = !alunos[i].open; render(); }
+    function logout() { auth.signOut().then(() => location.reload()); }
+    function remover(i) { if(confirm("Excluir aluno?")) { alunos.splice(i,1); sincronizar(); } }
+    function previewImg(input, imgId) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = e => { $(imgId).src = e.target.result; }; reader.readAsDataURL(input.files[0]); } }
+    function cadastrar() { const u = $("lUser").value, p = $("lPass").value; auth.createUserWithEmailAndPassword(u, p).then(res => db.collection('users').doc(res.user.uid).set({ config, alunos: [] })).catch(e => alert(e.message)); }
 </script>
-
-<!-- APPEND ONLY LOGIN FIREBASE + NUVEM -->
-<script type="module">
-
-async function salvarNuvem(){
-if(!window.professorUID)return;
-
-await window.setDoc(
-window.doc(window.db,"professores",window.professorUID),
-{
-alunos: alunos
-}
-);
-}
-
-async function carregarNuvem(){
-if(!window.professorUID)return;
-
-const snap = await window.getDoc(
-window.doc(window.db,"professores",window.professorUID)
-);
-
-if(snap.exists()){
-const dados=snap.data();
-
-if(dados.alunos){
-alunos=dados.alunos;
-localStorage.setItem("alunos",JSON.stringify(alunos));
-render();
-}
-}
-}
-
-const salvarOriginal = salvar;
-
-salvar = function(){
-salvarOriginal();
-salvarNuvem();
-};
-
-window.onAuthStateChanged(window.auth, async(user)=>{
-if(user){
-window.professorUID=user.uid;
-
-await carregarNuvem();
-
-document.getElementById("loginBox").style.display="none";
-}else{
-document.getElementById("loginBox").style.display="flex";
-}
-});
-
-const loginOriginal = loginSistema;
-
-loginSistema = async function(){
-
-const email=document.getElementById("email").value.trim();
-const senha=document.getElementById("password").value.trim();
-const lembrar=document.getElementById("lembrar").checked;
-
-if(!email||!senha){
-document.getElementById("msg").innerText="Preencha todos os campos";
-return;
-}
-
-try{
-
-if(lembrar){
-localStorage.setItem("email",email);
-localStorage.setItem("senha",senha);
-}else{
-localStorage.removeItem("email");
-localStorage.removeItem("senha");
-}
-
-const cred = await window.signInWithEmailAndPassword(
-window.auth,
-email,
-senha
-);
-
-window.professorUID = cred.user.uid;
-
-await carregarNuvem();
-
-document.getElementById("loginBox").style.display="none";
-
-}catch(e){
-document.getElementById("msg").innerText="Login inválido";
-}
-};
-
-</script>
-
 </body>
 </html>
